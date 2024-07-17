@@ -19,36 +19,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.green.entity.FreeBoard;
-import com.green.service.freeBoardService;
+import com.green.entity.NoticeBoard;
+import com.green.service.noticeBoardService;
 
 @RestController
-@RequestMapping("/api/free")
-public class FreeboardController {
+@RequestMapping("/api/notice")
+public class noticeBoardController {
 	
 	@Autowired
-	private freeBoardService freeboardService;
+	private noticeBoardService noticeboardService;
 	
 	// 게시판 전체 목록 api
-	@GetMapping("/BoardList")
+	@GetMapping("/noticeBoardList")
 	public ResponseEntity<Map<String, Object>> getBoardList(
 		
 		@RequestParam(defaultValue = "1") int pageNum,
 		@RequestParam(defaultValue = "10") int amount) {
 		
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, amount, Sort.by(Sort.Direction.DESC,"freeBoardNo"));
-        Page<FreeBoard> freeBoardPage = freeboardService.getAllBoard(pageRequest);
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, amount, Sort.by(Sort.Direction.DESC,"noticeBoardNo"));
+        Page<NoticeBoard> noticeBoardPage = noticeboardService.getAllBoard(pageRequest);
         
         Map<String, Object> response = new HashMap<>();
-        response.put("list", freeBoardPage.getContent());
-        response.put("page", getPageInfo(freeBoardPage));
+        response.put("list", noticeBoardPage.getContent());
+        response.put("page", getPageInfo(noticeBoardPage));
 
         
 		return ResponseEntity.ok(response);
 	}
 	
     // 페이지 정보 생성
-    public Map<String, Object> getPageInfo(Page<FreeBoard> couponPage) {
+    public Map<String, Object> getPageInfo(Page<NoticeBoard> couponPage) {
         Map<String, Object> pageInfo = new HashMap<>();
         
         int totalPages = couponPage.getTotalPages();
@@ -74,24 +74,24 @@ public class FreeboardController {
     }
 
     // 게시판 상세보기 api
-    @GetMapping("detail/{freeBoardNo}")
-    public ResponseEntity<FreeBoard> getBoardDetail(@PathVariable("freeBoardNo") long freeBoardNo){
-    	FreeBoard response = freeboardService.getBoardById(freeBoardNo);
+    @GetMapping("detail/{noticeBoardNo}")
+    public ResponseEntity<NoticeBoard> getBoardDetail(@PathVariable("freeBoardNo") long noticeBoardNo){
+    	NoticeBoard response = noticeboardService.getBoardById(noticeBoardNo);
   
     	return ResponseEntity.ok(response);
     }
     
 	// 게시판 글 삭제
-	@DeleteMapping("delete/{freeBoardNo}")
-	public ResponseEntity<FreeBoard> freeBoardDelete(@PathVariable("freeBoardNo") Long freeBoardNo) {
-		freeboardService.deleteFreeBoards(freeBoardNo);
+	@DeleteMapping("delete/{noticeBoardNo}")
+	public ResponseEntity<NoticeBoard> freeBoardDelete(@PathVariable("freeBoardNo") Long noticeBoardNo) {
+		noticeboardService.deleteFreeBoards(noticeBoardNo);
 		return ResponseEntity.noContent().build();
 	}
     
 	// 게시판 글 등록
 	@PostMapping("/post")
-	public ResponseEntity<FreeBoard> saveBoard(@RequestBody FreeBoard freeBoard){
-		FreeBoard response = freeboardService.saveBoard(freeBoard);
+	public ResponseEntity<NoticeBoard> saveBoard(@RequestBody NoticeBoard noticeBoardNo){
+		NoticeBoard response = noticeboardService.saveBoard(noticeBoardNo);
 		return ResponseEntity.ok(response);
 	}
 //	

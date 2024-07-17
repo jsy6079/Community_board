@@ -1,43 +1,38 @@
 package com.green.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.green.entity.FreeBoard;
-import com.green.repository.freeBoardRepository;
+import com.green.entity.NoticeBoard;
+import com.green.repository.noticeBoardRepository;
 
 @Service
-public class freeBoardService {
+public class noticeBoardService {
 	
 	@Autowired
-	private freeBoardRepository freeboardrepository;
+	private noticeBoardRepository noticeboardrepository;
 	
-    // 자유 게시판 전체 조회 (페이징 포함)
-    public Page<FreeBoard> getAllBoard(Pageable pageable){
-        return freeboardrepository.findAll(pageable);
+    // 전체 조회 (페이징 포함)
+    public Page<NoticeBoard> getAllBoard(Pageable pageable){
+        return noticeboardrepository.findAll(pageable);
     }
 	
-	// 게시판 상세 조회
+	// 상세 조회
 
-    public FreeBoard getBoardById(Long freeBoardNo) {
-        FreeBoard board = freeboardrepository.findById(freeBoardNo).orElse(null);
+    public NoticeBoard getBoardById(Long freeBoardNo) {
+        NoticeBoard board = noticeboardrepository.findById(freeBoardNo).orElse(null);
         if (board != null) {
-            board.setFreeBoardView(board.getFreeBoardView() + 1);
-            freeboardrepository.save(board);
+            board.setNoticeBoardView(board.getNoticeBoardView() + 1);
+            noticeboardrepository.save(board);
         }
         return board;
     }
     
     
-    // 자유 게시판 글 쓰기
-    public FreeBoard saveBoard(FreeBoard freeboard) {
-    	return freeboardrepository.save(freeboard);
+    //글
+    public NoticeBoard saveBoard(NoticeBoard freeboard) {
+    	return noticeboardrepository.save(freeboard);
     }
 //    
 //    
@@ -76,6 +71,6 @@ public class freeBoardService {
 //	
     // 자유 게시판 삭제
     public void deleteFreeBoards(Long freeBoardNo) {
-    	freeboardrepository.deleteById(freeBoardNo);
+    	noticeboardrepository.deleteById(freeBoardNo);
     }
 }

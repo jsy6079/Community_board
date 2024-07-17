@@ -19,7 +19,7 @@ public class testController {
     @Value("${lostark.api.key}")
     private String apiKey;
 
-    @GetMapping("test")
+    @GetMapping("event")
     public ResponseEntity<String> getLostArkEvents() {
         
         String url = "https://developer-lostark.game.onstove.com/news/events";
