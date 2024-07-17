@@ -1,5 +1,7 @@
 package com.green.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,11 @@ public class noticeBoardService {
 	
 	@Autowired
 	private noticeBoardRepository noticeboardrepository;
+	
+	// 최근 게시물 4개 노출
+	public List<NoticeBoard> getRecentBoard(){
+		return noticeboardrepository.findTop4ByOrderByNoticeBoardDateDesc();
+	}
 	
     // 전체 조회 (페이징 포함)
     public Page<NoticeBoard> getAllBoard(Pageable pageable){
@@ -34,6 +41,8 @@ public class noticeBoardService {
     public NoticeBoard saveBoard(NoticeBoard freeboard) {
     	return noticeboardrepository.save(freeboard);
     }
+    
+    
 //    
 //    
 //    // 자유 게시판 페이징

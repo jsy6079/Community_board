@@ -2,7 +2,7 @@ package com.green.controller;
 
 
 import java.util.HashMap;
-
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,16 @@ public class noticeBoardController {
 	
 	@Autowired
 	private noticeBoardService noticeboardService;
+	
+	
+	// 게시판 최근 목록 4개 노출
+	@GetMapping("/noticeBoardListResent")
+	public ResponseEntity<List<NoticeBoard>> getBoardList() {
+		
+		List<NoticeBoard> response = noticeboardService.getRecentBoard();
+
+		return ResponseEntity.ok(response);
+	}
 	
 	// 게시판 전체 목록 api
 	@GetMapping("/noticeBoardList")

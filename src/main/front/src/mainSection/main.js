@@ -9,7 +9,7 @@ function Main() {
   const [events, setEvents] = useState({ list: [] });
   const [notices,setNotices] = useState({list: []});
   const [calenders,setCalenders] = useState({list: []});
-
+  const [noticeLists,setNoticeLists] =useState({list: []});
   
   useEffect(() => {
 
@@ -52,6 +52,16 @@ function Main() {
     .catch(error => console.log('Error fetching data:', error));
 
   },[]);
+
+  axios.get('http://localhost:8080/api/noticeBoardListResent')
+  .then(response => {
+    if (response.data && Array.isArray(response.data)) {
+      setNoticeLists({ list: response.data });
+    } else {
+      console.error('Invalid data format:', response.data);
+    }
+  })
+  .catch(error => console.log('Error fetching data:', error));
  
 
 
@@ -73,6 +83,8 @@ function Main() {
         <div>
 
           <div id="featured-services" className="featured-services section">
+          
+      
             <div className="container">
               <div className="row gy-4">
               <h4 className="mb-1">Today Island</h4>  
@@ -81,7 +93,9 @@ function Main() {
                   <div className="service-item position-relative">
                     <div className='text-center'><img src={calender.ContentsIcon}></img>
                     </div>
-                    <h5 className='text-center'>{calender.ContentsName}</h5>  
+                    <div className="text-center">
+                      <h5 className='badge text-bg-success'>{calender.ContentsName}</h5>
+                    </div>
                     <p>
                       {calender.RewardItems.map(rewardItem => (
                         rewardItem.Items.map(item => (
@@ -93,7 +107,8 @@ function Main() {
                 </div>
               ))}
               </div>
-            </div>
+              </div>
+           
           </div>
 
 
@@ -109,7 +124,6 @@ function Main() {
                               </a>
                               </h4>
                               <hr className="custom-hr-head"/>
-
                               {notices.list.map(notice=>(
                                   <div>
                                       <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
@@ -127,10 +141,14 @@ function Main() {
                                   더 보기 <i className="uil uil-angle-right-b align-right"></i>
                               </a>
                               <hr className="custom-hr-head"/>
-                              <p>테스트</p>
-                              <p>테스트</p>
-                              <p>테스트</p>
-                              <p>테스트</p>
+
+                              {noticeLists.list.map(noticeList=>(
+                                  <div>
+                                      <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
+                                      <span className="badge text-bg-primary" >{noticeList.noticeBoardType}</span>{noticeList.noticeBoardTitle}</p>
+                                      <hr className="custom-hr"/>
+                                  </div>
+                                  ))}
                           </div>
                       </div>
                   </div> 
@@ -145,8 +163,9 @@ function Main() {
                       <div className="col-xl-3 col-lg-4 col-md-6 mt-4" key={event.Title}>
                       <div className="card blog blog-primary rounded border-0 shadow overflow-hidden">
                           <div className="position-relative">
-                              <img src={event.Thumbnail} style={{ width: '100%', height: 'auto' }} className="card-img-top" alt="..." />
-                              
+                          <a href={event.Link} target="_blank">
+                            <img src={event.Thumbnail} style={{ width: '100%', height: 'auto' }} className="card-img-top" alt="..." />
+                          </a>
                               <div className="overlay rounded-top"></div>
                           </div>
                           <div className="card-body content" style={{margin: '0px', paddingTop: '20px', paddingBottom: '0px'}}>

@@ -810,7 +810,7 @@ section,
 .section {
   color: var(--default-color);
   background-color: var(--background-color);
-  padding: 60px 0;
+  padding: 30px 0;
   scroll-margin-top: 100px;
   overflow: clip;
 }
@@ -828,7 +828,8 @@ section,
 --------------------------------------------------------------*/
 .section-title {
   text-align: center;
-  padding-bottom: 60px;
+  /* padding-bottom: 60px; */
+  padding-top: 30px;
   position: relative;
 }
 
@@ -970,9 +971,9 @@ section,
 # Featured Services Section
 --------------------------------------------------------------*/
 .featured-services .service-item {
-  padding: 50px 10px;
+  padding: 30px 10px;
   transition: all ease-in-out 0.4s;
-  width: 240px; 
+  width: 250px; 
   height: 220px; 
 }
 
@@ -1003,11 +1004,11 @@ section,
   margin-bottom: 0;
 }
 
-.featured-services .service-item:hover {
+/* .featured-services .service-item:hover {
   transform: translateY(-10px);
-  background-color: #f7f9fb;
+  background-color: #ebeaea;
   box-shadow: 0px 5px 90px 0px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .featured-services .service-item:hover h4 a {
   color: var(--accent-color);

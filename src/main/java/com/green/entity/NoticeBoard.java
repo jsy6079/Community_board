@@ -1,5 +1,6 @@
 package com.green.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -39,13 +40,13 @@ public class NoticeBoard {
 	private String noticeBoardWriter;
 	
 	@Column(name="noticeBoardDate", nullable = false)
-	private Date noticeBoardDate;
+	private LocalDateTime noticeBoardDate;
 	
 	@Column(name="noticeBoardView", nullable = false)
 	private Long noticeBoardView = 0L;
 	
     @PrePersist
     protected void onCreate() {
-        this.noticeBoardDate = new Date();
+        this.noticeBoardDate = LocalDateTime.now();
     }
 }
