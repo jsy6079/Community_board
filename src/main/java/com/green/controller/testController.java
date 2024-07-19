@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +34,16 @@ public class testController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         
-       
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
-        return response;
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .headers(responseHeaders)
+                .body(response.getBody());
     }
     
+
     @GetMapping("notice")
     public ResponseEntity<String> getLostArkNotice() {
         
@@ -52,10 +58,16 @@ public class testController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         
-       
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
-        return response;
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .headers(responseHeaders)
+                .body(response.getBody());
     }
+    
+    
     
     @GetMapping("characters")
     public ResponseEntity<String> getLostArkCharacters() {
@@ -72,8 +84,13 @@ public class testController {
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         
        
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
-        return response;
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .headers(responseHeaders)
+                .body(response.getBody());
     }
     
     
@@ -91,7 +108,14 @@ public class testController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
                
-        return response;
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
+        
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .headers(responseHeaders)
+                .body(response.getBody());
+        
     }
    
 

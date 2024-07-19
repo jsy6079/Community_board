@@ -17,7 +17,7 @@ public class noticeBoardService {
 	
 	// 최근 게시물 4개 노출
 	public List<NoticeBoard> getRecentBoard(){
-		return noticeboardrepository.findTop4ByOrderByNoticeBoardDateDesc();
+		return noticeboardrepository.findTop5ByOrderByNoticeBoardDateDesc();
 	}
 	
     // 전체 조회 (페이징 포함)

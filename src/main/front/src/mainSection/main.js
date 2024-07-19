@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"; 
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 
@@ -9,6 +10,7 @@ function Main() {
   const [events, setEvents] = useState({ list: [] });
   const [notices,setNotices] = useState({list: []});
   const [calenders,setCalenders] = useState({list: []});
+  const [fildBosses,setFildBosses] = useState({list: []});
   const [noticeLists,setNoticeLists] =useState({list: []});
   
   useEffect(() => {
@@ -42,7 +44,8 @@ function Main() {
         const today = new Date();
         const formattedToday = today.toISOString().slice(0,10);
         const filteredCalenders = response.data.filter(item => {
-          return item.CategoryName === '모험 섬' && item.StartTimes[0]?.startsWith(formattedToday);
+          return item.CategoryName === '모험 섬' && Array.isArray(item.StartTimes) &&
+          item.StartTimes.some(startTime => startTime.startsWith(formattedToday));
         });
         setCalenders({ list: filteredCalenders });
       } else {
@@ -51,18 +54,34 @@ function Main() {
     })
     .catch(error => console.log('Error fetching data:', error));
 
-  },[]);
 
-  axios.get('http://localhost:8080/api/noticeBoardListResent')
-  .then(response => {
-    if (response.data && Array.isArray(response.data)) {
-      setNoticeLists({ list: response.data });
-    } else {
-      console.error('Invalid data format:', response.data);
-    }
-  })
-  .catch(error => console.log('Error fetching data:', error));
- 
+    axios.get('http://localhost:8080/api/calender')
+    .then(response => {
+      if (response.data && Array.isArray(response.data)) {
+        const today = new Date();
+        const formattedToday = today.toISOString().slice(0,10);
+        const filteredCalenders = response.data.filter(item => {
+          return item.CategoryName === '필드보스' && Array.isArray(item.StartTimes) &&
+          item.StartTimes.some(startTime => startTime.startsWith(formattedToday));
+        });
+        setFildBosses({ list: filteredCalenders });
+      } else {
+        console.error('Invalid data format:', response.data);
+      }
+    })
+    .catch(error => console.log('Error fetching data:', error));
+
+    axios.get('http://localhost:8080/api/notice/noticeBoardListResent')
+    .then(response => {
+      if (response.data && Array.isArray(response.data)) {
+        setNoticeLists({ list: response.data });
+      } else {
+        console.error('Invalid data format:', response.data);
+      }
+    })
+    .catch(error => console.log('Error fetching data:', error));
+
+  },[]);
 
 
     // 날짜 포맷팅
@@ -113,6 +132,44 @@ function Main() {
 
 
 
+
+
+
+
+          <div id="featured-services" className="featured-services section">
+          
+      
+            <div className="container">
+              <div className="row gy-4">
+              <h4 className="mb-1">Today Island</h4>  
+              {fildBosses.list.map(fildBoss=>(
+                <div className="col-xl-3 col-md-6 d-flex" data-aos-delay="100">
+                  <div className="service-item position-relative">
+                    <div className='text-center'><img src={fildBoss.ContentsIcon}></img>
+                    </div>
+                    <div className="text-center">
+                      <h5 className='badge text-bg-success'>{fildBoss.ContentsName}</h5>
+                    </div>
+                    <p>
+                      {fildBoss.RewardItems.map(rewardItem => (
+                        rewardItem.Items.map(item => (
+                          <img style={{width: '30px', height: '30px'}} key={item.Name} src={item.Icon} alt={item.Name} />
+                        ))
+                      ))}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              </div>
+              </div>
+           
+          </div>
+
+
+
+
+
+
           <div className="container mt-60">
                 <div className="row align-items-center mb-4 pb-2">
                       <div className="col-md-6 ">
@@ -135,18 +192,18 @@ function Main() {
                       </div>
                       <div className="col-md-6">
                           <div className="section-title text-center text-md-start">
-                              <h4 className="mb-1">공지사항</h4>
-                              <a className="text-muted readmore plus-button" 
-                                  style={{ cursor: 'pointer' }} >
+                              <h4 className="mb-1">공지사항
+                              <Link style={{ cursor: 'pointer', fontSize: '20px',marginLeft: '10px' }} to="/noticeBoard">
                                   더 보기 <i className="uil uil-angle-right-b align-right"></i>
-                              </a>
+                              </Link>
+                              </h4>
                               <hr className="custom-hr-head"/>
 
                               {noticeLists.list.map(noticeList=>(
                                   <div>
                                       <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
-                                      <span className="badge text-bg-primary" >{noticeList.noticeBoardType}</span>{noticeList.noticeBoardTitle}</p>
-                                      <hr className="custom-hr"/>
+                                      <span className="badge text-bg-primary" >{noticeList.noticeBoardType}</span> <a href='#' target='_blank'>{noticeList.noticeBoardTitle}</a>
+                                      </p><hr className="custom-hr"/>
                                   </div>
                                   ))}
                           </div>

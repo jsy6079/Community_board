@@ -14,7 +14,7 @@ public interface noticeBoardRepository extends JpaRepository<NoticeBoard, Long> 
 	Page<NoticeBoard> findAll(Pageable pageable);
 	
 	// 최근 4개 게시물
-	List<NoticeBoard> findTop4ByOrderByNoticeBoardDateDesc();
+	List<NoticeBoard> findTop5ByOrderByNoticeBoardDateDesc();
 	
 
 

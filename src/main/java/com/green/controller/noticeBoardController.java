@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import com.green.service.noticeBoardService;
 
 @RestController
 @RequestMapping("/api/notice")
+@CrossOrigin(origins = "http://localhost:3000")
 public class noticeBoardController {
 	
 	@Autowired
@@ -31,6 +33,7 @@ public class noticeBoardController {
 	
 	
 	// 게시판 최근 목록 4개 노출
+	
 	@GetMapping("/noticeBoardListResent")
 	public ResponseEntity<List<NoticeBoard>> getBoardList() {
 		
