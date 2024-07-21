@@ -61,7 +61,7 @@ function Main() {
         const today = new Date();
         const formattedToday = today.toISOString().slice(0,10);
         const filteredCalenders = response.data.filter(item => {
-          return item.CategoryName === '필드보스' && Array.isArray(item.StartTimes) &&
+          return item.ContentsName === '세베크 아툰' && Array.isArray(item.StartTimes) &&
           item.StartTimes.some(startTime => startTime.startsWith(formattedToday));
         });
         setFildBosses({ list: filteredCalenders });
@@ -101,69 +101,58 @@ function Main() {
 
         <div>
 
-          <div id="featured-services" className="featured-services section">
-          
-      
-            <div className="container">
-              <div className="row gy-4">
-              <h4 className="mb-1">Today Island</h4>  
-              {calenders.list.map(calender=>(
-                <div className="col-xl-3 col-md-6 d-flex" data-aos-delay="100">
-                  <div className="service-item position-relative">
-                    <div className='text-center'><img src={calender.ContentsIcon}></img>
-                    </div>
-                    <div className="text-center">
-                      <h5 className='badge text-bg-success'>{calender.ContentsName}</h5>
-                    </div>
-                    <p>
-                      {calender.RewardItems.map(rewardItem => (
-                        rewardItem.Items.map(item => (
-                          <img style={{width: '30px', height: '30px'}} key={item.Name} src={item.Icon} alt={item.Name} />
-                        ))
-                      ))}
-                    </p>
+      <div style={{ display: 'flex' }}>
+            <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%', marginRight: '5%' }}>
+                {/* 테스트용 캘린더 박스 */}
+                <h4 className="mb-1">Today Island</h4>
+                <div className="container-island">
+                  <div className="row gy-4">
+                    {calenders.list.map((calender, index) => (
+                      <div key={index} className="col-xl-4 col-md-6 d-flex" data-aos-delay="100">
+                        <div className="service-item position-relative">
+                          <div className="text-center">
+                            <img src={calender.ContentsIcon} alt="Contents Icon" />
+                          </div>
+                          <div className="text-center">
+                            <h5 className="badge text-bg-success">{calender.ContentsName}</h5>
+                          </div>
+                          <p>
+                            {calender.RewardItems.map((rewardItem, rewardIndex) =>
+                              rewardItem.Items.map((item, itemIndex) => (
+                                <img
+                                  style={{ width: '30px', height: '30px' }}
+                                  key={`${rewardIndex}-${itemIndex}`}
+                                  src={item.Icon}
+                                  alt={item.Name}
+                                />
+                              ))
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
               </div>
-              </div>
-           
-          </div>
 
-
-
-
-
-
-
-          <div id="featured-services" className="featured-services section">
-          
-      
-            <div className="container">
-              <div className="row gy-4">
-              <h4 className="mb-1">Today Island</h4>  
-              {fildBosses.list.map(fildBoss=>(
-                <div className="col-xl-3 col-md-6 d-flex" data-aos-delay="100">
-                  <div className="service-item position-relative">
-                    <div className='text-center'><img src={fildBoss.ContentsIcon}></img>
+            <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%' }}>
+              <h4 className="mb-1">Filed Boss</h4>
+              <div className="container-boss">
+                <div className="row gy-4">
+                  {fildBosses.list.map((fildBoss, index) => (
+                    <div key={index} className="col-xl-3 col-md-6 d-flex" data-aos-delay="100">
+                      <div className="service-item position-relative">
+                        <div className="text-center">
+                          <img style={{ width: '40px', height: '40px' }} src={fildBoss.ContentsIcon} alt="Filed Boss Icon" />
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <h5 className='badge text-bg-success'>{fildBoss.ContentsName}</h5>
-                    </div>
-                    <p>
-                      {fildBoss.RewardItems.map(rewardItem => (
-                        rewardItem.Items.map(item => (
-                          <img style={{width: '30px', height: '30px'}} key={item.Name} src={item.Icon} alt={item.Name} />
-                        ))
-                      ))}
-                    </p>
-                  </div>
+                  ))}
                 </div>
-              ))}
               </div>
-              </div>
-           
-          </div>
+            </div>
+      </div>
+
 
 
 

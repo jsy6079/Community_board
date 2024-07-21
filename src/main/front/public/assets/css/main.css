@@ -3010,3 +3010,34 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 60%);
   font-size: 14px;
 }
+
+/* 추가한 css*/
+.container-island{
+  width: 100%;
+  border: 1px solid silver;
+  border-radius: 10px;
+}
+
+.calender-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.calender-item {
+  flex: 0 1 calc(33.333% - 20px); /* 3개의 아이템을 한 줄에 배치하고, 간격을 고려한 계산입니다 */
+  box-sizing: border-box;
+}
+
+.calender-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 아이템의 순서를 조정합니다 */
+.calender-item:nth-child(1) { order: 1; }
+.calender-item:nth-child(2) { order: 2; }
+.calender-item:nth-child(3) { order: 3; }
+.calender-item:nth-child(4) { order: 4; }
+.calender-item:nth-child(5) { order: 5; }
+.calender-item:nth-child(6) { order: 6; }
