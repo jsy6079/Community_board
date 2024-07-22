@@ -11,7 +11,13 @@ function Main() {
   const [notices,setNotices] = useState({list: []});
   const [calenders,setCalenders] = useState({list: []});
   const [fildBosses,setFildBosses] = useState({list: []});
+  const [chaosGates,setChaosGates] = useState({list: []});
   const [noticeLists,setNoticeLists] =useState({list: []});
+  const [nextFieldBossEvent, setNextFieldBossEvent] = useState('');
+  const [nextChaosGateEvent, setNextChaosGateEvent] = useState('');
+  const [fieldBossTimeRemaining, setFieldBossTimeRemaining] = useState('');
+  const [chaosGateTimeRemaining, setChaosGateTimeRemaining] = useState('');
+
   
   useEffect(() => {
 
@@ -37,6 +43,7 @@ function Main() {
     })
     .catch(error => console.log('Error fetching data:', error));
   
+
   
     axios.get('http://localhost:8080/api/calender')
     .then(response => {
@@ -55,21 +62,57 @@ function Main() {
     .catch(error => console.log('Error fetching data:', error));
 
 
+
     axios.get('http://localhost:8080/api/calender')
     .then(response => {
       if (response.data && Array.isArray(response.data)) {
-        const today = new Date();
-        const formattedToday = today.toISOString().slice(0,10);
-        const filteredCalenders = response.data.filter(item => {
-          return item.ContentsName === '세베크 아툰' && Array.isArray(item.StartTimes) &&
-          item.StartTimes.some(startTime => startTime.startsWith(formattedToday));
-        });
+        const now = new Date();
+        const formattedToday = now.toISOString().slice(0, 10);
+
+        const filteredCalenders = response.data.filter(item =>
+          item.ContentsName === '세베크 아툰' && Array.isArray(item.StartTimes) &&
+          item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
+        );
         setFildBosses({ list: filteredCalenders });
+
+        // 다음 이벤트 계산
+        calculateNextEvent(filteredCalenders, 'fieldBoss');
       } else {
         console.error('Invalid data format:', response.data);
       }
     })
     .catch(error => console.log('Error fetching data:', error));
+
+
+
+    axios.get('http://localhost:8080/api/calender')
+    .then(response => {
+      if (response.data && Array.isArray(response.data)) {
+        const now = new Date();
+        const formattedToday = now.toISOString().slice(0, 10);
+        
+        const filteredCalenders = response.data.filter(item =>
+          item.ContentsName === '일렁이는 악마군단 (쿠르잔 북부)' && Array.isArray(item.StartTimes) &&
+          item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
+        );
+        setChaosGates({ list: filteredCalenders });
+
+        // 다음 이벤트 계산
+        calculateNextEvent(filteredCalenders,'chaosGate');
+      } else {
+        console.error('Invalid data format:', response.data);
+      }
+    })
+    .catch(error => console.log('Error fetching data:', error));
+
+
+
+
+
+
+    
+
+
 
     axios.get('http://localhost:8080/api/notice/noticeBoardListResent')
     .then(response => {
@@ -82,6 +125,73 @@ function Main() {
     .catch(error => console.log('Error fetching data:', error));
 
   },[]);
+
+
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (nextFieldBossEvent) {
+        calculateTimeRemaining(new Date(nextFieldBossEvent), 'fieldBoss');
+      }
+      if (nextChaosGateEvent) {
+        calculateTimeRemaining(new Date(nextChaosGateEvent), 'chaosGate');
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [nextFieldBossEvent, nextChaosGateEvent]);
+
+  const calculateNextEvent = (calenders, type) => {
+    const now = new Date();
+    const futureEvents = calenders
+      .flatMap(item => item.StartTimes.map(time => new Date(time)))
+      .filter(time => time > now) // 현재 시간보다 미래인 이벤트만 필터링
+      .sort((a, b) => a - b); // 시간 오름차순 정렬
+
+    if (type === 'fieldBoss') {
+      if (futureEvents.length > 0) {
+        const nextEventTime = futureEvents[0];
+        setNextFieldBossEvent(nextEventTime.toISOString());
+      } else {
+        setNextFieldBossEvent(null);
+      }
+    } else if (type === 'chaosGate') {
+      if (futureEvents.length > 0) {
+        const nextEventTime = futureEvents[0];
+        setNextChaosGateEvent(nextEventTime.toISOString());
+      } else {
+        setNextChaosGateEvent(null);
+      }
+    }
+  };
+
+  const calculateTimeRemaining = (eventTime, type) => {
+    const now = new Date();
+    const diffMs = eventTime - now;
+
+    if (diffMs <= 0) {
+      if (type === 'fieldBoss') {
+        setFieldBossTimeRemaining('');
+      } else if (type === 'chaosGate') {
+        setChaosGateTimeRemaining('');
+      }
+      return;
+    }
+
+    const diffSecs = Math.floor(diffMs / 1000); // 전체 초 단위로 변환
+    const hours = Math.floor(diffSecs / 3600); // 전체 시간
+    const minutes = Math.floor((diffSecs % 3600) / 60); // 남은 분
+
+    if (type === 'fieldBoss') {
+      setFieldBossTimeRemaining(`${hours}시간 ${minutes}분`);
+    } else if (type === 'chaosGate') {
+      setChaosGateTimeRemaining(`${hours}시간 ${minutes}분`);
+    }
+  };
+
+
+
 
 
     // 날짜 포맷팅
@@ -99,7 +209,7 @@ function Main() {
 
     <div className="container" style={{marginTop: '50px'}}>
 
-        <div>
+    <div>
 
       <div style={{ display: 'flex' }}>
             <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%', marginRight: '5%' }}>
@@ -135,26 +245,69 @@ function Main() {
                 </div>
               </div>
 
-            <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%' }}>
-              <h4 className="mb-1">Filed Boss</h4>
+
+
+              
+            <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%'}}>
+              
+
+            <h4 className="mb-1">Today Calenders</h4>
               <div className="container-boss">
+                  <div className="row gy-4" >
+                    {fildBosses.list.map((fildBoss, index) => (
+                      <div key={index} className="d-flex" data-aos-delay="100">
+                        <div className="service-item d-flex align-items-center">
+                          <img style={{ width: '40px', height: '40px' }} src={fildBoss.ContentsIcon} alt="Field Boss Icon" />
+                          <span className="text-label">{fieldBossTimeRemaining}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {chaosGates.list.map((chaosGate, index) => (
+                        <div key={index} className="d-flex" data-aos-delay="100">
+                          <div className="service-item d-flex align-items-center">
+                            <img style={{ width: '40px', height: '40px' }} src={chaosGate.ContentsIcon} alt="Field Boss Icon" />
+                            <span className="text-label">{chaosGateTimeRemaining}</span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+              </div>
+
+              {/* <div className="container-boss">
+                  <div className="row gy-4">
+                    {chaosGates.list.map((chaosGate, index) => (
+                      <div key={index} className="d-flex" data-aos-delay="100">
+                        <div className="service-item d-flex align-items-center">
+                          <img style={{ width: '40px', height: '40px' }} src={chaosGate.ContentsIcon} alt="Field Boss Icon" />
+                          <span className="text-label">{chaosGateTimeRemaining}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+              </div> */}
+
+
+              {/* <div className="container-boss">
                 <div className="row gy-4">
-                  {fildBosses.list.map((fildBoss, index) => (
+                  {chaosGates.list.map((chaosGate, index) => (
                     <div key={index} className="col-xl-3 col-md-6 d-flex" data-aos-delay="100">
                       <div className="service-item position-relative">
                         <div className="text-center">
-                          <img style={{ width: '40px', height: '40px' }} src={fildBoss.ContentsIcon} alt="Filed Boss Icon" />
+                          <img style={{ width: '40px', height: '40px' }} src={chaosGate.ContentsIcon} alt="Filed Boss Icon" />
                         </div>
+                        <div>
+                        <div>{chaosGateTimeRemaining}</div>
+                       
+                      </div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
-      </div>
 
 
-
+    </div>
 
 
 
