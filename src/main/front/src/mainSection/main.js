@@ -17,7 +17,7 @@ function Main() {
   const [nextChaosGateEvent, setNextChaosGateEvent] = useState('');
   const [fieldBossTimeRemaining, setFieldBossTimeRemaining] = useState('');
   const [chaosGateTimeRemaining, setChaosGateTimeRemaining] = useState('');
-
+  const [message,setMessage] = useState('');
   
   useEffect(() => {
 
@@ -107,13 +107,6 @@ function Main() {
 
 
 
-
-
-
-    
-
-
-
     axios.get('http://localhost:8080/api/notice/noticeBoardListResent')
     .then(response => {
       if (response.data && Array.isArray(response.data)) {
@@ -140,7 +133,8 @@ function Main() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [nextFieldBossEvent, nextChaosGateEvent]);
+  }, [nextFieldBossEvent, nextChaosGateEvent, fildBosses.list, chaosGates.list]);
+
 
   const calculateNextEvent = (calenders, type) => {
     const now = new Date();
@@ -155,47 +149,91 @@ function Main() {
         setNextFieldBossEvent(nextEventTime.toISOString());
       } else {
         setNextFieldBossEvent(null);
+        setMessage('준비중');
       }
     } else if (type === 'chaosGate') {
       if (futureEvents.length > 0) {
         const nextEventTime = futureEvents[0];
         setNextChaosGateEvent(nextEventTime.toISOString());
-      } else {
+      } 
+      }else {
         setNextChaosGateEvent(null);
+        setMessage('준비중');
       }
-    }
   };
+
 
   const calculateTimeRemaining = (eventTime, type) => {
     const now = new Date();
     const diffMs = eventTime - now;
+  
+    // if (diffMs <= 0) {
+    //   if (type === 'fieldBoss') {
+    //     setFieldBossTimeRemaining('');
+    //   } else if (type === 'chaosGate') {
+    //     setChaosGateTimeRemaining('');
+    //   }
+    //   return;
+    // }
 
     if (diffMs <= 0) {
       if (type === 'fieldBoss') {
-        setFieldBossTimeRemaining('');
+        // 다음 필드 보스 이벤트를 찾아 갱신
+        setNextFieldBossEvent((prevState) => {
+          const futureEvents = fildBosses.list
+            .flatMap(item => item.StartTimes.map(time => new Date(time)))
+            .filter(time => time > now) // 현재 시간보다 미래인 이벤트만 필터링
+            .sort((a, b) => a - b); // 시간 오름차순 정렬
+  
+          if (futureEvents.length > 0) {
+            const nextEventTime = futureEvents[0];
+            calculateTimeRemaining(nextEventTime, 'fieldBoss'); // 새로운 이벤트 시간으로 재계산
+            return nextEventTime.toISOString();
+          } else {
+            setFieldBossTimeRemaining('');
+            return null;
+          }
+        });
       } else if (type === 'chaosGate') {
-        setChaosGateTimeRemaining('');
+        // 다음 카오스 게이트 이벤트를 찾아 갱신
+        setNextChaosGateEvent((prevState) => {
+          const futureEvents = chaosGates.list
+            .flatMap(item => item.StartTimes.map(time => new Date(time)))
+            .filter(time => time > now) // 현재 시간보다 미래인 이벤트만 필터링
+            .sort((a, b) => a - b); // 시간 오름차순 정렬
+  
+          if (futureEvents.length > 0) {
+            const nextEventTime = futureEvents[0];
+            calculateTimeRemaining(nextEventTime, 'chaosGate'); // 새로운 이벤트 시간으로 재계산
+            return nextEventTime.toISOString();
+          } else {
+            setChaosGateTimeRemaining('');
+            return null;
+          }
+        });
       }
       return;
     }
-
+  
     const diffSecs = Math.floor(diffMs / 1000); // 전체 초 단위로 변환
     const hours = Math.floor(diffSecs / 3600); // 전체 시간
     const minutes = Math.floor((diffSecs % 3600) / 60); // 남은 분
     const seconds = diffSecs % 60; // 남은 초
     
-    let timeString = '';
-    if (hours > 0) {
-      timeString += `${hours}시간 `;
-    }
-    timeString += `${minutes}분 ${seconds}초`;
+    // 시, 분, 초가 한 자리일 경우 앞에 0을 붙임
+    const padNumber = (num) => num.toString().padStart(2, '0');
+  
+    const timeString = `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`;
     
     if (type === 'fieldBoss') {
       setFieldBossTimeRemaining(timeString);
     } else if (type === 'chaosGate') {
       setChaosGateTimeRemaining(timeString);
     }
-  }
+  };
+  
+
+
 
 
     // 날짜 포맷팅
@@ -214,7 +252,12 @@ function Main() {
     <div className="container" style={{marginTop: '50px'}}>
 
     <div>
+    <form className='input-character-container'>
+      <input type='text' className='input-character' placeholder='검색어를 입력해주세요'></input>
+      <button className='btn-two green small rounded'>검색</button>
+    </form>
 
+    
       <div style={{ display: 'flex' }}>
             <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%', marginRight: '5%' }}>
                 <h4 className="mb-1">Today Island</h4>
@@ -263,13 +306,12 @@ function Main() {
                         <span
                           className="text-label"
                           style={{
-                            color: '#735bd2', // 폰트 색상
-                            fontSize: '20px', // 폰트 크기
-                            fontWeight: 'bold', // 폰트 두께
-                            fontFamily: 'Arial, sans-serif', // 폰트 패밀리
+                            color: '#c81919', 
+                            fontSize: '20px', 
+                            fontWeight: '900',
                           }}
                         >
-                          {chaosGateTimeRemaining}
+                          {chaosGateTimeRemaining || '준비중'}
                         </span>
                       </div>
                     </div>
@@ -281,13 +323,12 @@ function Main() {
                         <span
                           className="text-label"
                           style={{
-                            color: '#735bd2', // 폰트 색상
-                            fontSize: '20px', // 폰트 크기
-                            fontWeight: 'bold', // 폰트 두께
-                            fontFamily: 'Arial, sans-serif', // 폰트 패밀리
+                            color: '#c81919', 
+                            fontSize: '20px', 
+                            fontWeight: '900',
                           }}
                         >
-                          {fieldBossTimeRemaining}
+                          {fieldBossTimeRemaining || '준비중'}
                         </span>
                       </div>
                     </div>
