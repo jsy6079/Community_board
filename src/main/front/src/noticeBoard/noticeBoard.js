@@ -84,7 +84,7 @@ const NoticeBoard = () => {
 
     <div className="container" style={{marginTop: '50px'}}>
             <div className="d-flex justify-content-end">
-                <button type='button' className="btn btn-primary" onClick={noticeBoardWrite}>
+                <button type='button' className="btn-gradient blue small rounded" onClick={noticeBoardWrite}>
                     글쓰기
                 </button>
             </div>

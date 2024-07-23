@@ -46,7 +46,6 @@ return (
     <div className="container" style={{marginTop: '50px'}}>
     <form onSubmit={handleSubmit}>
       <div>
-        <p>제목</p>
         <div style={{ display: 'flex', alignItems: 'center' }}>
         <input
           className="form-control"
@@ -78,9 +77,8 @@ return (
         </div>
       </div>
 
-
-      <div>
-        <p>작성자</p>
+      
+      <div style={{marginBottom: '20px'}}>
         <input
           className="form-control"
           placeholder="작성자를 입력해주세요."
@@ -95,7 +93,6 @@ return (
       </div>
 
       <div>
-        <p>내용</p>
         <textarea
           className="form-control"
           placeholder="내용을 입력해주세요."
@@ -109,7 +106,7 @@ return (
       </div>
 
       <div className="d-flex justify-content-end" style={{ marginTop: '20px' }}>
-        <button type="submit" className="btn btn-primary">등록하기</button>
+        <button type="submit" className="btn-gradient blue small rounded">등록하기</button>
       </div>
     </form>
     </div>

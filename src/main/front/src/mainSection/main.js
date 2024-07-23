@@ -253,14 +253,14 @@ function Main() {
 
     <div>
     <form className='input-character-container'>
-      <input type='text' className='input-character' placeholder='검색어를 입력해주세요'></input>
+      <input type='text' className='input-character' placeholder='캐릭터명을 입력해주세요'></input>
       <button className='btn-two green small rounded'>검색</button>
     </form>
 
     
       <div style={{ display: 'flex' }}>
             <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%', marginRight: '5%' }}>
-                <h4 className="mb-1">Today Island</h4>
+                <h4 className="mb-2" style={{ textAlign: 'left' }}>Today Island</h4>
                 <div className="container-island">
                   <div className="row gy-4">
                     {calenders.list.map((calender, index) => (
@@ -270,7 +270,7 @@ function Main() {
                             <img src={calender.ContentsIcon} style={{borderRadius: '5px'}} alt="Contents Icon" />
                           </div>
                           <div className="text-center">
-                            <h5 className="badge text-bg-primary">{calender.ContentsName}</h5>
+                            <h5 className="badge text-bg-danger">{calender.ContentsName}</h5>
                           </div>
                           <p>
                             {calender.RewardItems.map((rewardItem, rewardIndex) =>
@@ -293,9 +293,8 @@ function Main() {
 
             <div id="featured-services" className="featured-services section" style={{ maxWidth: '50%'}}>
   
-             <h4 className="mb-1">Today Calenders</h4>
+             <h4 className="mb-2" style={{ textAlign: 'left' }}>Today Calenders</h4>
 
-             
               <div className="container-boss">
                 <div className="row gy-4" style={{ width: '100%', height: '225px', overflowY: 'auto' }}>
                 
@@ -398,7 +397,7 @@ function Main() {
                           </a>
                               <div className="overlay rounded-top"></div>
                           </div>
-                          <div className="card-body content" style={{margin: '0px', paddingTop: '20px', paddingBottom: '0px'}}>
+                          <div className="card-body content" style={{paddingBottom: '0px',marginTop: '0px',marginBottom: '0px'}}>
                               <p><a href={event.Link} target='_blank'>{event.Title}</a></p>
                               <p className="post-meta d-flex justify-content-between mt-2" style={{ display: 'flex', alignItems: 'center'}}>
                                 <span> {formatDate(event.StartDate)}  ~ {formatDate(event.EndDate)} </span> 
