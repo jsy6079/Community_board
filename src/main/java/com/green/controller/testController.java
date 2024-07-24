@@ -34,12 +34,12 @@ public class testController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
         return ResponseEntity
                 .status(response.getStatusCode())
-                .headers(responseHeaders)
+//                .headers(responseHeaders)
                 .body(response.getBody());
     }
     
@@ -58,12 +58,12 @@ public class testController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
         return ResponseEntity
                 .status(response.getStatusCode())
-                .headers(responseHeaders)
+//                .headers(responseHeaders)
                 .body(response.getBody());
     }
     
@@ -84,12 +84,12 @@ public class testController {
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         
        
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
         return ResponseEntity
                 .status(response.getStatusCode())
-                .headers(responseHeaders)
+//                .headers(responseHeaders)
                 .body(response.getBody());
     }
     
@@ -108,12 +108,12 @@ public class testController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
                
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        responseHeaders.set("Access-Control-Allow-Origin", "*"); // CORS 허용 설정
         
         return ResponseEntity
                 .status(response.getStatusCode())
-                .headers(responseHeaders)
+//                .headers(responseHeaders)
                 .body(response.getBody());
         
     }

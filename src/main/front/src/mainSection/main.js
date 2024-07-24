@@ -75,6 +75,8 @@ function Main() {
         );
         setFildBosses({ list: filteredCalenders });
 
+        console.log('아아아아아아악'+filteredCalenders);
+
         // 다음 이벤트 계산
         calculateNextEvent(filteredCalenders, 'fieldBoss');
       } else {

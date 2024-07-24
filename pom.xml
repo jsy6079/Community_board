@@ -79,7 +79,36 @@
 			<version>3.0.3</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- jwt -->
+			<dependency>
+			    <groupId>io.jsonwebtoken</groupId>
+			    <artifactId>jjwt-api</artifactId>
+			    <version>0.11.5</version>
+			</dependency>
+			
+			<!-- JWT Implementation -->
+			<dependency>
+			    <groupId>io.jsonwebtoken</groupId>
+			    <artifactId>jjwt-impl</artifactId>
+			    <version>0.11.5</version>
+			</dependency>
+			
+			<!-- JSON Parser (Jackson) -->
+			<dependency>
+			    <groupId>io.jsonwebtoken</groupId>
+			    <artifactId>jjwt-jackson</artifactId>
+			    <version>0.11.5</version>
+			</dependency>
+		<!-- spring 시큐리티 -->
+	    <dependency>        
+			<groupId>org.springframework.boot</groupId>        
+			<artifactId>spring-boot-starter-security</artifactId>    
+		</dependency>
+		
+		
 	</dependencies>
+	
 
 	<build>
 		<plugins>
