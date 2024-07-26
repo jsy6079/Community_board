@@ -26,9 +26,8 @@ public class noticeBoardService {
     }
 	
 	// 상세 조회
-
-    public NoticeBoard getBoardById(Long freeBoardNo) {
-        NoticeBoard board = noticeboardrepository.findById(freeBoardNo).orElse(null);
+    public NoticeBoard getBoardById(Long noticeBoardNo) {
+        NoticeBoard board = noticeboardrepository.findById(noticeBoardNo).orElse(null);
         if (board != null) {
             board.setNoticeBoardView(board.getNoticeBoardView() + 1);
             noticeboardrepository.save(board);

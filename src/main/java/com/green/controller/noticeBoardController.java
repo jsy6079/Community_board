@@ -86,9 +86,9 @@ public class noticeBoardController {
         return pageInfo;
     }
 
-    // 게시판 상세보기 api
+    // 게시판 상세보기
     @GetMapping("detail/{noticeBoardNo}")
-    public ResponseEntity<NoticeBoard> getBoardDetail(@PathVariable("freeBoardNo") long noticeBoardNo){
+    public ResponseEntity<NoticeBoard> getBoardDetail(@PathVariable("noticeBoardNo") long noticeBoardNo){
     	NoticeBoard response = noticeboardService.getBoardById(noticeBoardNo);
   
     	return ResponseEntity.ok(response);
@@ -107,14 +107,8 @@ public class noticeBoardController {
 		NoticeBoard response = noticeboardService.saveBoard(noticeBoardNo);
 		return ResponseEntity.ok(response);
 	}
-//	
-//	// 자유게시판 글 등록
-//	@PostMapping("/freeBoardWrite")
-//	public String saveBoard(@ModelAttribute FreeBoard freeboard) {
-//		freeboardService.saveBoard(freeboard);
-//		return "redirect:/main";
-//	}
-//
+
+	
 //	// 자유게시판 글 수정 폼 데이터 가져오기
 //	@GetMapping("/free/freeBoardEdit/{freeBoardNo}")
 //	public String showEditFreeBoard(@PathVariable("freeBoardNo") Long freeBoardNo, Model model) {

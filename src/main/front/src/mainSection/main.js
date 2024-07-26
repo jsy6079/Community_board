@@ -1,128 +1,90 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom"; 
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-
-
 function Main() {
-
   const [events, setEvents] = useState({ list: [] });
-  const [notices,setNotices] = useState({list: []});
-  const [calenders,setCalenders] = useState({list: []});
-  const [fildBosses,setFildBosses] = useState({list: []});
-  const [chaosGates,setChaosGates] = useState({list: []});
-  const [noticeLists,setNoticeLists] =useState({list: []});
+  const [notices, setNotices] = useState({ list: [] });
+  const [calenders, setCalenders] = useState({ list: [] });
+  const [fildBosses, setFildBosses] = useState({ list: [] });
+  const [chaosGates, setChaosGates] = useState({ list: [] });
+  const [noticeLists, setNoticeLists] = useState({ list: [] });
   const [nextFieldBossEvent, setNextFieldBossEvent] = useState('');
   const [nextChaosGateEvent, setNextChaosGateEvent] = useState('');
   const [fieldBossTimeRemaining, setFieldBossTimeRemaining] = useState('');
   const [chaosGateTimeRemaining, setChaosGateTimeRemaining] = useState('');
-  const [message,setMessage] = useState('');
-  
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [eventResponse, noticeResponse, calendarResponse, noticeBoardResponse] = await Promise.all([
+          axios.get('http://localhost:8080/api/event'),
+          axios.get('http://localhost:8080/api/notice'),
+          axios.get('http://localhost:8080/api/calender'),
+          axios.get('http://localhost:8080/api/notice/noticeBoardListResent'),
+        ]);
 
-    axios.get('http://localhost:8080/api/event')
-    .then(response => {
-      if (response.data && Array.isArray(response.data)) {
-        setEvents({ list: response.data });
-      } else {
-        console.error('Invalid data format:', response.data);
+        if (eventResponse.data && Array.isArray(eventResponse.data)) {
+          setEvents({ list: eventResponse.data });
+        }
+
+        if (noticeResponse.data && Array.isArray(noticeResponse.data)) {
+          const top5Notices = noticeResponse.data.slice(0, 5);
+          setNotices({ list: top5Notices });
+        }
+
+        if (calendarResponse.data && Array.isArray(calendarResponse.data)) {
+          const now = new Date();
+          const formattedToday = now.toISOString().slice(0, 10);
+
+          const adventureIslandCalendars = calendarResponse.data.filter(item =>
+            item.CategoryName === '모험 섬' && Array.isArray(item.StartTimes) &&
+            item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
+          );
+          setCalenders({ list: adventureIslandCalendars });
+
+          const fieldBossCalendars = calendarResponse.data.filter(item =>
+            item.ContentsName === '세베크 아툰' && Array.isArray(item.StartTimes) &&
+            item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
+          );
+          setFildBosses({ list: fieldBossCalendars });
+          calculateNextEvent(fieldBossCalendars, 'fieldBoss');
+
+          const chaosGateCalendars = calendarResponse.data.filter(item =>
+            item.ContentsName === '일렁이는 악마군단 (쿠르잔 북부)' && Array.isArray(item.StartTimes) &&
+            item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
+          );
+          setChaosGates({ list: chaosGateCalendars });
+          calculateNextEvent(chaosGateCalendars, 'chaosGate');
+        }
+
+        if (noticeBoardResponse.data && Array.isArray(noticeBoardResponse.data)) {
+          setNoticeLists({ list: noticeBoardResponse.data });
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-    })
-    .catch(error => console.log('Error fetching data:', error));
-  
-  
-    axios.get('http://localhost:8080/api/notice')
-    .then(response => {
-      if (response.data && Array.isArray(response.data)) {
-        const top5Notices = response.data.slice(0,5);
-        setNotices({ list: top5Notices });
-      } else {
-        console.error('Invalid data format:', response.data);
-      }
-    })
-    .catch(error => console.log('Error fetching data:', error));
-  
-
-  
-    axios.get('http://localhost:8080/api/calender')
-    .then(response => {
-      if (response.data && Array.isArray(response.data)) {
-        const today = new Date();
-        const formattedToday = today.toISOString().slice(0,10);
-        const filteredCalenders = response.data.filter(item => {
-          return item.CategoryName === '모험 섬' && Array.isArray(item.StartTimes) &&
-          item.StartTimes.some(startTime => startTime.startsWith(formattedToday));
-        });
-        setCalenders({ list: filteredCalenders });
-      } else {
-        console.error('Invalid data format:', response.data);
-      }
-    })
-    .catch(error => console.log('Error fetching data:', error));
 
 
 
-    axios.get('http://localhost:8080/api/calender')
-    .then(response => {
-      if (response.data && Array.isArray(response.data)) {
-        const now = new Date();
-        const formattedToday = now.toISOString().slice(0, 10);
-
-        const filteredCalenders = response.data.filter(item =>
-          item.ContentsName === '세베크 아툰' && Array.isArray(item.StartTimes) &&
-          item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
-        );
-        setFildBosses({ list: filteredCalenders });
-
-        console.log('아아아아아아악'+filteredCalenders);
-
-        // 다음 이벤트 계산
-        calculateNextEvent(filteredCalenders, 'fieldBoss');
-      } else {
-        console.error('Invalid data format:', response.data);
-      }
-    })
-    .catch(error => console.log('Error fetching data:', error));
+    
+      axios.get('http://localhost:8080/api/notice/detail/${noticeBoardNo}')
+      .then(response => {
+        window.alert('해당 번호 ');
+      })
+      .catch(error => {
+        console.log('조회 실패'+error);
+      })
 
 
 
-    axios.get('http://localhost:8080/api/calender')
-    .then(response => {
-      if (response.data && Array.isArray(response.data)) {
-        const now = new Date();
-        const formattedToday = now.toISOString().slice(0, 10);
-        
-        const filteredCalenders = response.data.filter(item =>
-          item.ContentsName === '일렁이는 악마군단 (쿠르잔 북부)' && Array.isArray(item.StartTimes) &&
-          item.StartTimes.some(startTime => startTime.startsWith(formattedToday))
-        );
-        setChaosGates({ list: filteredCalenders });
+      
 
-        // 다음 이벤트 계산
-        calculateNextEvent(filteredCalenders,'chaosGate');
-      } else {
-        console.error('Invalid data format:', response.data);
-      }
-    })
-    .catch(error => console.log('Error fetching data:', error));
+    };
 
-
-
-    axios.get('http://localhost:8080/api/notice/noticeBoardListResent')
-    .then(response => {
-      if (response.data && Array.isArray(response.data)) {
-        setNoticeLists({ list: response.data });
-      } else {
-        console.error('Invalid data format:', response.data);
-      }
-    })
-    .catch(error => console.log('Error fetching data:', error));
-
-  },[]);
-
-
-
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -135,117 +97,98 @@ function Main() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [nextFieldBossEvent, nextChaosGateEvent, fildBosses.list, chaosGates.list]);
-
+  }, [nextFieldBossEvent, nextChaosGateEvent]);
 
   const calculateNextEvent = (calenders, type) => {
     const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const futureEvents = calenders
       .flatMap(item => item.StartTimes.map(time => new Date(time)))
-      .filter(time => time > now) // 현재 시간보다 미래인 이벤트만 필터링
-      .sort((a, b) => a - b); // 시간 오름차순 정렬
+      .filter(time => time > now)
+      .sort((a, b) => a - b);
+
+    const todayEvents = futureEvents.filter(event => {
+      const eventDate = new Date(event.getFullYear(), event.getMonth(), event.getDate());
+      return formatDate(eventDate.toISOString()) === formatDate(today.toISOString());
+    });
 
     if (type === 'fieldBoss') {
-      if (futureEvents.length > 0) {
-        const nextEventTime = futureEvents[0];
+      if (todayEvents.length > 0) {
+        const nextEventTime = todayEvents[0];
         setNextFieldBossEvent(nextEventTime.toISOString());
       } else {
-        setNextFieldBossEvent(null);
+        setNextFieldBossEvent('');
         setMessage('준비중');
       }
     } else if (type === 'chaosGate') {
-      if (futureEvents.length > 0) {
-        const nextEventTime = futureEvents[0];
+      if (todayEvents.length > 0) {
+        const nextEventTime = todayEvents[0];
         setNextChaosGateEvent(nextEventTime.toISOString());
-      } 
-      }else {
-        setNextChaosGateEvent(null);
+      } else {
+        setNextChaosGateEvent('');
         setMessage('준비중');
       }
+    }
   };
-
 
   const calculateTimeRemaining = (eventTime, type) => {
     const now = new Date();
     const diffMs = eventTime - now;
-  
-    // if (diffMs <= 0) {
-    //   if (type === 'fieldBoss') {
-    //     setFieldBossTimeRemaining('');
-    //   } else if (type === 'chaosGate') {
-    //     setChaosGateTimeRemaining('');
-    //   }
-    //   return;
-    // }
 
     if (diffMs <= 0) {
+      // Handle event has passed
       if (type === 'fieldBoss') {
-        // 다음 필드 보스 이벤트를 찾아 갱신
-        setNextFieldBossEvent((prevState) => {
-          const futureEvents = fildBosses.list
-            .flatMap(item => item.StartTimes.map(time => new Date(time)))
-            .filter(time => time > now) // 현재 시간보다 미래인 이벤트만 필터링
-            .sort((a, b) => a - b); // 시간 오름차순 정렬
-  
-          if (futureEvents.length > 0) {
-            const nextEventTime = futureEvents[0];
-            calculateTimeRemaining(nextEventTime, 'fieldBoss'); // 새로운 이벤트 시간으로 재계산
-            return nextEventTime.toISOString();
-          } else {
-            setFieldBossTimeRemaining('');
-            return null;
-          }
-        });
+        const futureEvents = fildBosses.list
+          .flatMap(item => item.StartTimes.map(time => new Date(time)))
+          .filter(time => time > now)
+          .sort((a, b) => a - b);
+
+        if (futureEvents.length > 0) {
+          const nextEventTime = futureEvents[0];
+          setNextFieldBossEvent(nextEventTime.toISOString());
+          calculateTimeRemaining(nextEventTime, 'fieldBoss');
+        } else {
+          setFieldBossTimeRemaining('');
+        }
       } else if (type === 'chaosGate') {
-        // 다음 카오스 게이트 이벤트를 찾아 갱신
-        setNextChaosGateEvent((prevState) => {
-          const futureEvents = chaosGates.list
-            .flatMap(item => item.StartTimes.map(time => new Date(time)))
-            .filter(time => time > now) // 현재 시간보다 미래인 이벤트만 필터링
-            .sort((a, b) => a - b); // 시간 오름차순 정렬
-  
-          if (futureEvents.length > 0) {
-            const nextEventTime = futureEvents[0];
-            calculateTimeRemaining(nextEventTime, 'chaosGate'); // 새로운 이벤트 시간으로 재계산
-            return nextEventTime.toISOString();
-          } else {
-            setChaosGateTimeRemaining('');
-            return null;
-          }
-        });
+        const futureEvents = chaosGates.list
+          .flatMap(item => item.StartTimes.map(time => new Date(time)))
+          .filter(time => time > now)
+          .sort((a, b) => a - b);
+
+        if (futureEvents.length > 0) {
+          const nextEventTime = futureEvents[0];
+          setNextChaosGateEvent(nextEventTime.toISOString());
+          calculateTimeRemaining(nextEventTime, 'chaosGate');
+        } else {
+          setChaosGateTimeRemaining('');
+        }
       }
       return;
     }
-  
-    const diffSecs = Math.floor(diffMs / 1000); // 전체 초 단위로 변환
-    const hours = Math.floor(diffSecs / 3600); // 전체 시간
-    const minutes = Math.floor((diffSecs % 3600) / 60); // 남은 분
-    const seconds = diffSecs % 60; // 남은 초
-    
-    // 시, 분, 초가 한 자리일 경우 앞에 0을 붙임
+
+    const diffSecs = Math.floor(diffMs / 1000);
+    const hours = Math.floor(diffSecs / 3600);
+    const minutes = Math.floor((diffSecs % 3600) / 60);
+    const seconds = diffSecs % 60;
+
     const padNumber = (num) => num.toString().padStart(2, '0');
-  
     const timeString = `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`;
-    
+
     if (type === 'fieldBoss') {
-      setFieldBossTimeRemaining(timeString);
+      setFieldBossTimeRemaining(prev => prev !== timeString ? timeString : prev);
     } else if (type === 'chaosGate') {
-      setChaosGateTimeRemaining(timeString);
+      setChaosGateTimeRemaining(prev => prev !== timeString ? timeString : prev);
     }
   };
-  
 
-
-
-
-    // 날짜 포맷팅
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
 
 
@@ -367,9 +310,10 @@ function Main() {
                       <div className="col-md-6">
                           <div className="section-title text-center text-md-start">
                               <h4 className="mb-1">공지사항
-                              <Link style={{ cursor: 'pointer', fontSize: '20px',marginLeft: '10px' }} to="/noticeBoard">
+                              <a href='/noticeBoard' className="text-muted readmore plus-button" 
+                                  style={{ cursor: 'pointer', fontSize: '20px',marginLeft: '10px' }}>
                                   더 보기 <i className="uil uil-angle-right-b align-right"></i>
-                              </Link>
+                              </a>
                               </h4>
                               <hr className="custom-hr-head"/>
 
