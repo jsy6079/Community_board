@@ -17,7 +17,7 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path='/noticeBoard' element={<NoticeBoard/>}/>
         <Route path="/noticeBoardWrite" element={<NoticeBoardWrite/>} />
-        <Route path="/api/free/detail/:freeBoardNo" element={<NoticeBoardDetail/>}/>
+        <Route path="/noticeBoardDetail/:noticeBoardNo" element={<NoticeBoardDetail/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
       </Routes>

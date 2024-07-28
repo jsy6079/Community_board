@@ -26,7 +26,9 @@ function Main() {
         ]);
 
         if (eventResponse.data && Array.isArray(eventResponse.data)) {
-          setEvents({ list: eventResponse.data });
+          const eventDate = new Date();
+          const filteredEvents = eventResponse.data.filter(event => new Date(event.EndDate) >= eventDate);
+          setEvents({ list: filteredEvents});
         }
 
         if (noticeResponse.data && Array.isArray(noticeResponse.data)) {
@@ -65,26 +67,11 @@ function Main() {
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-
-
-
-    
-      axios.get('http://localhost:8080/api/notice/detail/${noticeBoardNo}')
-      .then(response => {
-        window.alert('해당 번호 ');
-      })
-      .catch(error => {
-        console.log('조회 실패'+error);
-      })
-
-
-
-      
-
     };
-
     fetchData();
   }, []);
+  
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -118,7 +105,7 @@ function Main() {
         setNextFieldBossEvent(nextEventTime.toISOString());
       } else {
         setNextFieldBossEvent('');
-        setMessage('준비중');
+        setMessage('오늘은 등장하지 않아요!');
       }
     } else if (type === 'chaosGate') {
       if (todayEvents.length > 0) {
@@ -126,7 +113,7 @@ function Main() {
         setNextChaosGateEvent(nextEventTime.toISOString());
       } else {
         setNextChaosGateEvent('');
-        setMessage('준비중');
+        setMessage('오늘은 등장하지 않아요!');
       }
     }
   };
@@ -181,6 +168,29 @@ function Main() {
       setChaosGateTimeRemaining(prev => prev !== timeString ? timeString : prev);
     }
   };
+
+  const getType = (Type) => {
+    switch (Type) {
+      case "점검":
+        return "badge text-bg-danger";
+      case "공지":
+        return "badge text-bg-primary";
+      case "상점":
+        return "badge text-bg-secondary";
+      case "이벤트":
+        return "badge text-bg-success";
+    }
+  }
+
+  const getLoaType = (noticeBoardType) => {
+    switch (noticeBoardType) {
+      case "점검":
+        return "badge text-bg-danger";
+      case "공지":
+        return "badge text-bg-primary";
+    }
+  }
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -255,7 +265,7 @@ function Main() {
                             fontWeight: '900',
                           }}
                         >
-                          {chaosGateTimeRemaining || '준비중'}
+                          {chaosGateTimeRemaining || message}
                         </span>
                       </div>
                     </div>
@@ -272,19 +282,14 @@ function Main() {
                             fontWeight: '900',
                           }}
                         >
-                          {fieldBossTimeRemaining || '준비중'}
+                          {fieldBossTimeRemaining || message}
                         </span>
                       </div>
                     </div>
                   ))}
                 </div>
             </div>
-
-
-
             </div>
-
-
     </div>
 
           <div className="container mt-60">
@@ -301,7 +306,7 @@ function Main() {
                               {notices.list.map(notice=>(
                                   <div>
                                       <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
-                                      <span className="badge text-bg-primary" >{notice.Type}</span>  <a href={notice.Link} target='_blank'>{notice.Title}</a>
+                                      <span className={getType(notice.Type)}>{notice.Type}</span>  <a href={notice.Link} target='_blank'>{notice.Title}</a>
                                       </p><hr className="custom-hr"/>
                                   </div>
                                   ))}
@@ -309,7 +314,7 @@ function Main() {
                       </div>
                       <div className="col-md-6">
                           <div className="section-title text-center text-md-start">
-                              <h4 className="mb-1">공지사항
+                              <h4 className="mb-1">LoaMong 공지사항
                               <a href='/noticeBoard' className="text-muted readmore plus-button" 
                                   style={{ cursor: 'pointer', fontSize: '20px',marginLeft: '10px' }}>
                                   더 보기 <i className="uil uil-angle-right-b align-right"></i>
@@ -320,7 +325,7 @@ function Main() {
                               {noticeLists.list.map(noticeList=>(
                                   <div>
                                       <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
-                                      <span className="badge text-bg-primary" >{noticeList.noticeBoardType}</span> <a href='#' target='_blank'>{noticeList.noticeBoardTitle}</a>
+                                      <span className={getLoaType(noticeList.noticeBoardType)}>{noticeList.noticeBoardType}</span> <Link to={`/noticeBoardDetail/${noticeList.noticeBoardNo}`}>{noticeList.noticeBoardTitle}</Link>
                                       </p><hr className="custom-hr"/>
                                   </div>
                                   ))}
@@ -344,7 +349,12 @@ function Main() {
                               <div className="overlay rounded-top"></div>
                           </div>
                           <div className="card-body content" style={{paddingBottom: '0px',marginTop: '0px',marginBottom: '0px'}}>
-                              <p><a href={event.Link} target='_blank'>{event.Title}</a></p>
+                              <p style={{
+                                  maxWidth: '200px',
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis'
+                                }}><a href={event.Link} target='_blank'>{event.Title}</a></p>
                               <p className="post-meta d-flex justify-content-between mt-2" style={{ display: 'flex', alignItems: 'center'}}>
                                 <span> {formatDate(event.StartDate)}  ~ {formatDate(event.EndDate)} </span> 
                             </p>

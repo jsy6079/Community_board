@@ -72,7 +72,6 @@ return (
             <option value="none">태그를 선택해주세요</option>
             <option value="공지">공지</option>
             <option value="점검">점검</option>
-            <option value="업데이트">업데이트</option>
           </select>
         </div>
       </div>

@@ -25,7 +25,7 @@ import com.green.service.noticeBoardService;
 
 @RestController
 @RequestMapping("/api/notice")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
 public class noticeBoardController {
 	
 	@Autowired
