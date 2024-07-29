@@ -8,6 +8,7 @@ import NoticeBoardDetail from './noticeBoard/noticeBoardDetail';
 import NoticeBoard from './noticeBoard/noticeBoard';
 import Login from './login/login';
 import Signup from './signup/signup';
+import SearchCharacter from './mainSection/searchCharacter'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/noticeBoard' element={<NoticeBoard/>}/>
         <Route path="/noticeBoardWrite" element={<NoticeBoardWrite/>} />
         <Route path="/noticeBoardDetail/:noticeBoardNo" element={<NoticeBoardDetail/>}/>
+        <Route path='/searchCharacter/:searchCharacter' element={<SearchCharacter/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
       </Routes>

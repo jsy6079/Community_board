@@ -102,7 +102,7 @@ const NoticeBoard = () => {
                 {loaMongNotices.list.map(loaMongNotice=>(
                    <tr>
                               <td>{loaMongNotice.noticeBoardType}</td>
-                              <td className="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover"><Link to={`/noticeBoardDetail/${loaMongNotice.noticeBoardNo}`}>{loaMongNotice.noticeBoardTitle}</Link></td>
+                              <td className="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover"><Link to={`/noticeBoardDetail/${loaMongNotice.noticeBoardNo}`} style={{textDecoration: 'none'}}>{loaMongNotice.noticeBoardTitle}</Link></td>
                               
                               <td>{formatDate(loaMongNotice.noticeBoardDate)}</td>
                               <td>{loaMongNotice.noticeBoardView}</td>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link,navigate, useNavigate } from 'react-router-dom';
 
 function Main() {
   const [events, setEvents] = useState({ list: [] });
@@ -13,7 +13,10 @@ function Main() {
   const [nextChaosGateEvent, setNextChaosGateEvent] = useState('');
   const [fieldBossTimeRemaining, setFieldBossTimeRemaining] = useState('');
   const [chaosGateTimeRemaining, setChaosGateTimeRemaining] = useState('');
+  const [searchCharacter,setSearchCharacter] = useState('');
   const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +28,7 @@ function Main() {
           axios.get('http://localhost:8080/api/notice/noticeBoardListResent'),
         ]);
 
-        if (eventResponse.data && Array.isArray(eventResponse.data)) {
+        if (eventResponse.data && Array.isArray(eventResponse.data)) {  
           const eventDate = new Date();
           const filteredEvents = eventResponse.data.filter(event => new Date(event.EndDate) >= eventDate);
           setEvents({ list: filteredEvents});
@@ -191,11 +194,20 @@ function Main() {
     }
   }
 
+  const handleChange = (event) => {
+    setSearchCharacter(event.target.value);
+  };
 
+  const handleSearch = (event) => {
+    event.preventDefault();
+    navigate('/searchCharacter/'+searchCharacter, { state: { searchCharacter } });
+  };
+
+  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
@@ -208,8 +220,8 @@ function Main() {
 
     <div>
     <form className='input-character-container'>
-      <input type='text' className='input-character' placeholder='캐릭터명을 입력해주세요'></input>
-      <button className='btn-two green small rounded'>검색</button>
+      <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' value={searchCharacter} onChange={handleChange} placeholder='캐릭터명을 입력해주세요'></input>
+      <button className='btn-two green small rounded' onClick={handleSearch}>검색</button>
     </form>
 
     
@@ -306,7 +318,7 @@ function Main() {
                               {notices.list.map(notice=>(
                                   <div>
                                       <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
-                                      <span className={getType(notice.Type)}>{notice.Type}</span>  <a href={notice.Link} target='_blank'>{notice.Title}</a>
+                                      <span className={getType(notice.Type)}>{notice.Type}</span>  <a href={notice.Link} target='_blank' style={{textDecoration: 'none'}}>{notice.Title}</a>
                                       </p><hr className="custom-hr"/>
                                   </div>
                                   ))}
@@ -325,7 +337,7 @@ function Main() {
                               {noticeLists.list.map(noticeList=>(
                                   <div>
                                       <p className="readmore custom-section-content" style={{ display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', maxWidth: '100%' }}>
-                                      <span className={getLoaType(noticeList.noticeBoardType)}>{noticeList.noticeBoardType}</span> <Link to={`/noticeBoardDetail/${noticeList.noticeBoardNo}`}>{noticeList.noticeBoardTitle}</Link>
+                                      <span className={getLoaType(noticeList.noticeBoardType)}>{noticeList.noticeBoardType}</span> <Link to={`/noticeBoardDetail/${noticeList.noticeBoardNo}`} style={{textDecoration: 'none'}}>{noticeList.noticeBoardTitle}</Link>
                                       </p><hr className="custom-hr"/>
                                   </div>
                                   ))}

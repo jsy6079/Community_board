@@ -15,7 +15,7 @@ const NavBar = () => {
   return (
     <header id="header" className="header d-flex align-items-center sticky-top">
       <div className="container-fluid position-relative d-flex align-items-center justify-content-between">
-        <h1>LoaMong <img src='/assets/img/12_RM.png' style={{width: '43px', height: '43px'}}></img></h1>
+      <Link to="/" style={{color:'black', textDecoration: 'none'}}><h1>LoaMong <img src='/assets/img/12_RM.png' style={{width: '43px', height: '43px'}}></img></h1></Link>
 
         <nav id="navmenu" className="navmenu">
           <ul>
