@@ -1078,7 +1078,7 @@ section,
 
 .about .nav-link.active {
   color: var(--accent-color);
-  background: none;
+  background: #02a2bd;
   border-bottom: 3px solid var(--accent-color);
 }
 
@@ -3466,3 +3466,27 @@ button[class*="btn"] {border: 0;}
 .btn-gradient.yellow:active {background: #DBC05B;}
 .btn-gradient.green:active  {background: #72B08E;}
 
+
+.character-info {
+  font-family: Arial, sans-serif; /* 기본 폰트 설정 */
+}
+
+.info-row {
+  display: table; /* 테이블 형태로 표시 */
+  width: 100%; /* 전체 너비 사용 */
+  margin-bottom: 8px; /* 각 항목 사이에 간격 추가 */
+}
+
+.label {
+  display: table-cell; /* 테이블 셀로 표시 */
+  width: 150px; /* 레이블의 너비를 고정 */
+  font-weight: bold; /* 레이블 텍스트를 굵게 */
+  text-align: right; /* 오른쪽 정렬 */
+  
+  
+}
+
+.value {
+  display: table-cell; /* 테이블 셀로 표시 */
+  padding-left: 10px; /* 레이블과 값 사이에 간격 추가 */
+}

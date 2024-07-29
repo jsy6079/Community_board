@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function SearchCharacter() {
-    const location = useLocation();
-    const { searchCharacter } = location.state || {};
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchCharacter, setSearchCharacter] = useState(location.state?.searchCharacter || '');
     const [characterData, setCharacterData] = useState({
-      profiles: [],
+      profiles: null,
       equipment: [],
       avatars: [],
       combatSkills: [],
@@ -18,7 +19,7 @@ function SearchCharacter() {
       gems: [],
       collectibles: []
     });
-  
+
     useEffect(() => {
       AOS.init();
       
@@ -35,16 +36,15 @@ function SearchCharacter() {
               gemsResponse,
               collectiblesResponse
             ] = await Promise.all([
-              axios.get('http://localhost:8080/api/characters/profiles/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/equipment/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/avatars/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/combat-skills/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/engravings/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/cards/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/gems/'+searchCharacter, { withCredentials: true }),
-              axios.get('http://localhost:8080/api/characters/collectibles/'+searchCharacter, { withCredentials: true })
+              axios.get('http://localhost:8080/api/characters/profiles/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/equipment/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/avatars/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/combat-skills/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/engravings/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/cards/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/gems/' + searchCharacter, { withCredentials: true }),
+              axios.get('http://localhost:8080/api/characters/collectibles/' + searchCharacter, { withCredentials: true })
             ]);
-  
 
             setCharacterData({
               profiles: profilesResponse.data,
@@ -55,13 +55,12 @@ function SearchCharacter() {
               cards: cardsResponse.data,
               gems: gemsResponse.data,
               collectibles: collectiblesResponse.data
-
             });
           } catch (error) {
             console.error('Error fetching data:', error);
           }
         };
-  
+
         fetchData();
       }
     }, [searchCharacter]);
@@ -70,25 +69,68 @@ function SearchCharacter() {
         return str.replace(/<[^>]*>/g, '');
     };
 
+    const handleChange = (event) => {
+      setSearchCharacter(event.target.value);
+    };
+
+    const handleSearch = (event) => {
+      event.preventDefault();
+      navigate('/searchCharacter/' + searchCharacter, { state: { searchCharacter } });
+    };
+
   return (
     <div id="about" className="about section">
       <div className="container section-title" data-aos="fade-up">
-        {characterData ? (
+        {characterData.profiles ? (
           <>
-            <h2>About Us</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+          <form className='input-character-container'>
+            <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' value={searchCharacter} onChange={handleChange} placeholder='캐릭터명을 입력해주세요' required></input>
+            <button className='btn-two green small rounded' type='submit' onClick={handleSearch}>검색</button>
+          </form>
 
             <div className="container" data-aos="fade-up">
               <div className="row g-4 g-lg-5" data-aos="fade-up" data-aos-delay="200">
                 <div className="col-lg-5">
-                  <div className="about-img">
-                    {/* <img src={characterData.CharacterImage} className="img-fluid" alt=""/> */}
+                  <div>
+                    <img src={characterData.profiles.CharacterImage} style={{width:'430px',height:'500px'}} className="img-fluid" alt=""/>
                   </div>
+
+
+                  <div className="character-info">
+                    <div className="info-row">
+                      <div className="label">서버:</div>
+                      <div className="value">{characterData.profiles.ServerName}</div>
+                    </div>
+                    <div className="info-row">
+                      <div className="label">캐릭터 명:</div>
+                      <div className="value">{characterData.profiles.CharacterName}</div>
+                    </div>
+                    <div className="info-row">
+                      <div className="label">원정대 레벨:</div>
+                      <div className="value">{characterData.profiles.ExpeditionLevel}</div>
+                    </div>
+                    <div className="info-row">
+                      <div className="label">칭호:</div>
+                      <div className="value">{characterData.profiles.Title}</div>
+                    </div>
+                    <div className="info-row">
+                      <div className="label">길드:</div>
+                      <div className="value">{characterData.profiles.GuildName}</div>
+                    </div>
+                    <div className="info-row">
+                      <div className="label">아이템 레벨:</div>
+                      <div className="value">{characterData.profiles.ItemMaxLevel}</div>
+                    </div>
+                    <div className="info-row">
+                      <div className="label">전투 레벨:</div>
+                      <div className="value">{characterData.profiles.CharacterLevel}</div>
+                    </div>
+                  </div>
+
+
                 </div>
 
                 <div className="col-lg-7">
-                  <h3 className="pt-0 pt-lg-5">Neque officiis dolore maiores et exercitationem quae est seda lidera pat claero</h3>
-
                   <ul className="nav nav-pills mb-3">
                     <li><a className="nav-link" data-bs-toggle="pill" href="#about-tab1">캐릭터 정보</a></li>
                     <li><a className="nav-link" data-bs-toggle="pill" href="#about-tab2">장비 및 아바타</a></li>
@@ -97,83 +139,58 @@ function SearchCharacter() {
 
                   <div className="tab-content">
                     <div className="tab-pane fade show active" id="about-tab1">
-                      <p className="fst-italic">이름: {characterData.profiles.CharacterName}</p>
-                      <p className="fst-italic">원대: {characterData.profiles.ExpeditionLevel}</p>
-                      <p className="fst-italic">타이틀: {characterData.profiles.Title}</p>
-                      <p className="fst-italic">길드이름: {characterData.profiles.GuildName}</p>
-                      <p className="fst-italic">아이템레벨: {characterData.profiles.ItemMaxLevel}</p>
-                      <p className="fst-italic">레벨: {characterData.profiles.CharacterLevel}</p>
-                      <p className="fst-italic">서버이름: {characterData.profiles.ServerName}</p>
 
-                      <ul>
+
+
+                      <div className='container-island' style={{textAlign: 'left'}}>
                         {characterData.engravings.Effects && characterData.engravings.Effects.map((effect, index) => (
-                            <li key={index}><img src={effect.Icon} style={{width:'20px', height:'20px'}}></img>{effect.Name}</li>
-                        ))}
-                    </ul>
+                              <p key={index}><img src={effect.Icon} style={{width:'40px', height:'40px'}}></img>{effect.Name}</p>
+                          ))}
+                      </div>
 
-                    <ul>
+                        
+                      <div className='container-island' style={{textAlign: 'left'}}>
                         {characterData.cards.Cards && characterData.cards.Cards.map((card, index) => (
-                            <li key={index}>
-                                <img src={card.Icon} style={{width:'20px', height:'20px'}} />
+                            <p key={index}>
+                                <img src={card.Icon} style={{width:'90px', height:'100px'}} />
                                 {card.Name}{card.AwakeCount}
-                            </li>
+                            </p>
                         ))}
-                    </ul>
+                      </div>
+         
 
-                    <ul>
-                        {characterData.gems.Gems && characterData.gems.Gems.map((gems, index) => (
-                            <li key={index}>
-                                <img src={gems.Icon} style={{width:'20px', height:'20px'}} />
-                                {removeHtmlTags(gems.Name)}
-                            </li>
+                      <div className='container-island' style={{textAlign: 'left'}}>
+                        {characterData.gems.Gems && characterData.gems.Gems.map((gem, index) => (
+                            <p key={index}>
+                                <img src={gem.Icon} style={{width:'40px', height:'40px'}} />
+                                {removeHtmlTags(gem.Name)}
+                            </p>
                         ))}
-                    </ul>
+                      </div>
+              
 
-                    <ul>
-                        {characterData.collectibles && characterData.collectibles.map((collectibles, index) => (
-                            <li key={index}><img src={collectibles.Icon} style={{width:'20px', height:'20px'}}></img>{collectibles.Type}{collectibles.Point}</li>
+                      <div className='container-island' style={{textAlign: 'left'}}>
+                        {characterData.collectibles && characterData.collectibles.map((collectible, index) => (
+                            <p key={index}><img src={collectible.Icon} style={{width:'20px', height:'20px'}}></img>{collectible.Type}{collectible.Point}</p>
                         ))}
-                    </ul>
-                      <div className="d-flex align-items-center mt-4">
-                        <i className="bi bi-check2"></i>
-                        <h4>2번 소개</h4>
                       </div>
-                      <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
 
-                      <div className="d-flex align-items-center mt-4">
-                        <i className="bi bi-check2"></i>
-                        <h4>3번 소개</h4>
-                      </div>
-                      <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
 
-                      <div className="d-flex align-items-center mt-4">
-                        <i className="bi bi-check2"></i>
-                        <h4>4번 소개</h4>
-                      </div>
-                      <p>Eius alias aut cupiditate. Dolor voluptates animi ut blanditiis quos nam. Magnam officia aut ut alias quo explicabo ullam esse. Sunt magnam et dolorem eaque magnam odit enim quaerat. Vero error error voluptatem eum.</p>
+
                     </div>
-
-
-
-
-
-
 
                     <div className="tab-pane fade" id="about-tab2">
                       <p className="fst-italic">Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
-
                       <div className="d-flex align-items-center mt-4">
                         <i className="bi bi-check2"></i>
                         <h4>5번 소개</h4>
                       </div>
                       <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
-
                       <div className="d-flex align-items-center mt-4">
                         <i className="bi bi-check2"></i>
                         <h4>6번 소개</h4>
                       </div>
                       <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
-
                       <div className="d-flex align-items-center mt-4">
                         <i className="bi bi-check2"></i>
                         <h4>7번 소개</h4>
@@ -183,19 +200,16 @@ function SearchCharacter() {
 
                     <div className="tab-pane fade" id="about-tab3">
                       <p className="fst-italic">Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
-
                       <div className="d-flex align-items-center mt-4">
                         <i className="bi bi-check2"></i>
                         <h4>8번 소개</h4>
                       </div>
                       <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
-
                       <div className="d-flex align-items-center mt-4">
                         <i className="bi bi-check2"></i>
                         <h4>9번 소개</h4>
                       </div>
                       <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
-
                       <div className="d-flex align-items-center mt-4">
                         <i className="bi bi-check2"></i>
                         <h4>10번 소개</h4>
@@ -208,7 +222,7 @@ function SearchCharacter() {
             </div>
           </>
         ) : (
-          <p>Loading...</p>
+          <p>해당 캐릭터는 존재하지 않습니다.</p>
         )}
       </div>
     </div>

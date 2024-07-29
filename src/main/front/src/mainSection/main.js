@@ -219,9 +219,9 @@ function Main() {
     <div className="container" style={{marginTop: '50px'}}>
 
     <div>
-    <form className='input-character-container'>
-      <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' value={searchCharacter} onChange={handleChange} placeholder='캐릭터명을 입력해주세요'></input>
-      <button className='btn-two green small rounded' onClick={handleSearch}>검색</button>
+    <form className='input-character-container' onSubmit={handleSearch}>
+      <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' value={searchCharacter} onChange={handleChange} placeholder='캐릭터명을 입력해주세요' required></input>
+      <button className='btn-two green small rounded' type='submit'>검색</button>
     </form>
 
     
