@@ -3,6 +3,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Tooltip } from 'react-tooltip';
 
 function SearchCharacter() {
 
@@ -15,10 +16,11 @@ function SearchCharacter() {
       avatars: [],
       combatSkills: [],
       engravings: [],
-      cards: [],
+      cards: {Cards: [], Effects: []},
       gems: [],
       collectibles: []
     });
+
 
     useEffect(() => {
       AOS.init();
@@ -65,10 +67,7 @@ function SearchCharacter() {
       }
     }, [searchCharacter]);
 
-    const removeHtmlTags = (str) => {
-        return str.replace(/<[^>]*>/g, '');
-    };
-
+  // 검색 핸들러
     const handleChange = (event) => {
       setSearchCharacter(event.target.value);
     };
@@ -78,6 +77,57 @@ function SearchCharacter() {
       navigate('/searchCharacter/' + searchCharacter, { state: { searchCharacter } });
     };
 
+
+  // 태그 제외
+    const removeHtmlTags = (str) => {
+      return str.replace(/<[^>]*>/g, '');
+  };
+
+  // 태그 제외 + 한글자 추출
+  const getFirstChar = (str) => {
+    str.replace(/<[^>]*>/g, '');
+    const cleanedStr = removeHtmlTags(str);
+    return cleanedStr.slice(0, 4);
+  };
+
+  
+    const parseTooltip = (tooltip) => {
+      try {
+        const parsed = JSON.parse(tooltip);
+    
+        const element005Value = parsed.Element_005?.value;
+        if (element005Value && element005Value.Element_001) {
+          return removeHtmlTags(element005Value.Element_001);
+        }
+    
+        const element006Value = parsed.Element_006?.value;
+        if (element006Value && element006Value.Element_001) {
+          return removeHtmlTags(element006Value.Element_001);
+        }
+    
+        return '';
+    
+      } catch (e) {
+        console.log('툴팁 오류: ' + e);
+        return '';
+      }
+    };
+
+    
+    const profileTooltip = (tooltipArray) => {
+      // 툴팁 배열이 없거나 빈 배열인 경우 빈 문자열 반환
+      if (!tooltipArray || tooltipArray.length === 0) {
+        return '';
+      }
+      
+      // 배열의 항목을 줄 바꿈으로 구분하여 결합
+      return tooltipArray.join('\n');
+    };
+
+
+
+
+        
   return (
     <div id="about" className="about section">
       <div className="container section-title" data-aos="fade-up">
@@ -94,8 +144,6 @@ function SearchCharacter() {
                   <div>
                     <img src={characterData.profiles.CharacterImage} style={{width:'430px',height:'500px'}} className="img-fluid" alt=""/>
                   </div>
-
-
                   <div className="character-info">
                     <div className="info-row">
                       <div className="label">서버:</div>
@@ -126,8 +174,6 @@ function SearchCharacter() {
                       <div className="value">{characterData.profiles.CharacterLevel}</div>
                     </div>
                   </div>
-
-
                 </div>
 
                 <div className="col-lg-7">
@@ -141,41 +187,84 @@ function SearchCharacter() {
                     <div className="tab-pane fade show active" id="about-tab1">
 
 
+                  <div className='container-island' style={{textAlign: 'left'}}>
+                      {characterData.profiles.Stats && characterData.profiles.Stats.map((profiles, index) => (
+                            
 
-                      <div className='container-island' style={{textAlign: 'left'}}>
+                            <div key={index} style={{ position: 'relative' }}>
+                            <p 
+                              style={{ cursor: 'pointer' }} 
+                              data-tooltip-id={`tooltip-${index}`} 
+                              data-tooltip-content={profileTooltip(profiles.Tooltip)}
+                            >
+                              {profiles.Type}: {profiles.Value}
+                            </p>
+                            <Tooltip 
+                              id={`tooltip-${index}`} 
+                              place="top" 
+                              type="dark" 
+                              effect="float" 
+                              multiline 
+                            />
+                          </div>
+
+
+
+                        ))}
+                    </div>
+
+
+                      <div style={{textAlign: 'left'}}>
                         {characterData.engravings.Effects && characterData.engravings.Effects.map((effect, index) => (
-                              <p key={index}><img src={effect.Icon} style={{width:'40px', height:'40px'}}></img>{effect.Name}</p>
+                              <p key={index} style={{fontWeight: 'bold'}}><img src={effect.Icon} style={{width:'40px', height:'40px' , borderRadius: '20px'}}></img>  {effect.Name}</p>
                           ))}
                       </div>
 
-                        
-                      <div className='container-island' style={{textAlign: 'left'}}>
-                        {characterData.cards.Cards && characterData.cards.Cards.map((card, index) => (
-                            <p key={index}>
-                                <img src={card.Icon} style={{width:'90px', height:'100px'}} />
-                                {card.Name}{card.AwakeCount}
-                            </p>
-                        ))}
-                      </div>
-         
 
-                      <div className='container-island' style={{textAlign: 'left'}}>
+                      <div style={{textAlign: 'left', display: 'flex', flexWrap: 'wrap' }}>
                         {characterData.gems.Gems && characterData.gems.Gems.map((gem, index) => (
-                            <p key={index}>
-                                <img src={gem.Icon} style={{width:'40px', height:'40px'}} />
-                                {removeHtmlTags(gem.Name)}
+                            <p key={index} style={{ margin: '5px', textAlign: 'center' }}>
+                                <img src={gem.Icon} style={{ width: '40px', height: '40px', display: 'block',margin: '0 auto' }} data-tooltip-id={`tooltip-${index}`} data-tooltip-content={parseTooltip(gem.Tooltip)}/>
+                                <Tooltip id={`tooltip-${index}`} place="top" type="dark" effect="float" multiline />
+                                <span className='badge-gems'>{getFirstChar(gem.Name)}</span>
                             </p>
                         ))}
                       </div>
-              
+                      
 
+                      <div style={{textAlign: 'left', display: 'flex', flexWrap: 'wrap' }}>
+                        {characterData.cards.Cards && characterData.cards.Cards.map((card, index) => (
+                          <p key={index} style={{ margin: '5px', textAlign: 'center', position: 'relative' }}>
+                            <img className='container-island' src={card.Icon} style={{ width: '90px', height: '100px', display: 'block', margin: '0 auto'}} />
+                            <span className='badge-cards'>
+                              {card.AwakeCount}
+                            </span>
+                          </p>
+                          ))}
+                          {characterData.cards.Effects && characterData.cards.Effects.length > 0 ? (
+                            characterData.cards.Effects.map((effect, index) => (
+                                <div key={index}>
+                                  {effect.Items.map((item, itemIndex) => (
+                                    <p key={itemIndex}>
+                                      <span className='badge-cards-effect'>{item.Name}</span>
+                                      <br />
+                                      <span style={{fontWeight: 'bold'}}>{item.Description}</span>
+                                    </p>
+                                  ))}
+                                </div>
+                              ))
+                            ) : (
+                              <p>효과 정보가 없습니다.</p>
+                            )}
+                    </div>
+
+              
+                        {/* 추후에 따로 뺴놓을 것
                       <div className='container-island' style={{textAlign: 'left'}}>
                         {characterData.collectibles && characterData.collectibles.map((collectible, index) => (
                             <p key={index}><img src={collectible.Icon} style={{width:'20px', height:'20px'}}></img>{collectible.Type}{collectible.Point}</p>
                         ))}
-                      </div>
-
-
+                      </div> */}
 
                     </div>
 

@@ -3490,3 +3490,41 @@ button[class*="btn"] {border: 0;}
   display: table-cell; /* 테이블 셀로 표시 */
   padding-left: 10px; /* 레이블과 값 사이에 간격 추가 */
 }
+
+.badge-gems {
+  align-items: center;
+  justify-content: center;
+  background-color: #E8601B; 
+  color: #fff; 
+  border-radius: 8px; 
+  padding: 5px 5px; 
+  font-size: 12px; 
+  text-align: center; 
+}
+
+ .badge-cards {
+  position: absolute;
+  top: 3px; 
+  right: 3px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f0c630;
+  color: black;
+  font-size: 12px;
+  text-align: center;
+}
+
+.badge-cards-effect{
+  align-items: center;
+  justify-content: center;
+  background-color: #608FBF; 
+  color: #fff; 
+  border-radius: 8px; 
+  padding: 5px 5px; 
+  font-size: 12px; 
+  text-align: center; 
+}
