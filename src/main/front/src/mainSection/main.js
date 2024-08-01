@@ -220,8 +220,8 @@ function Main() {
 
     <div>
     <form className='input-character-container' onSubmit={handleSearch}>
-      <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' value={searchCharacter} onChange={handleChange} placeholder='캐릭터명을 입력해주세요' required></input>
-      <button className='btn-two green small rounded' type='submit'>검색</button>
+      <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' onChange={handleChange} placeholder='캐릭터명을 입력해주세요' required></input>
+      <button className='btn-two green small rounded' type='button'>검색</button>
     </form>
 
     
@@ -262,45 +262,98 @@ function Main() {
   
              <h4 className="mb-2" style={{ textAlign: 'left' }}>Today Calenders</h4>
 
-              <div className="container-boss">
-                <div className="row gy-4" style={{ width: '100%', height: '225px', overflowY: 'auto' }}>
-                
-                  {chaosGates.list.slice(0, 3).map((chaosGate, index) => (
-                    <div key={index} className="d-flex" data-aos-delay="100">
-                      <div className="d-flex align-items-center">
-                        <img style={{ width: '40px', height: '40px', borderRadius: '10px', marginRight: '10px'}} src={chaosGate.ContentsIcon} alt="Chaos Gate Icon" />
-                        <span
-                          className="text-label"
-                          style={{
-                            color: '#c81919', 
-                            fontSize: '20px', 
-                            fontWeight: '900',
-                          }}
-                        >
-                          {chaosGateTimeRemaining || message}
-                        </span>
-                      </div>
-                    </div>
-                ))}
-                  {fildBosses.list.slice(0, 3).map((fildBoss, index) => (
-                    <div key={index} className="d-flex" data-aos-delay="100">
-                      <div className="d-flex align-items-center">
-                        <img style={{ width: '40px', height: '40px', borderRadius: '10px', marginRight: '10px'}} src={fildBoss.ContentsIcon} alt="Field Boss Icon" />
-                        <span
-                          className="text-label"
-                          style={{
-                            color: '#c81919', 
-                            fontSize: '20px', 
-                            fontWeight: '900',
-                          }}
-                        >
-                          {fieldBossTimeRemaining || message}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="container-boss">
+                        <div className="row gy-4" style={{ width: '100%', height: '225px', overflowY: 'auto' }}>
+                        
+                      {chaosGates.list.length === 0 ? (
+                        <div className="d-flex align-items-center">
+                          <img
+                            style={{ width: '40px', height: '40px', borderRadius: '10px', marginRight: '10px' }}
+                            src='/assets/img/noCG.png'
+                            alt="No Chaos Gate Icon"
+                          />
+                          <span
+                            className="text-label"
+                            style={{
+                              color: '#c81919',
+                              fontSize: '20px',
+                              fontWeight: '900',
+                            }}
+                          >
+                            오늘은 등장하지 않아요!
+                          </span>
+                        </div>
+                      ) : (
+                        chaosGates.list.slice(0, 3).map((chaosGate, index) => (
+                          <div key={index} className="d-flex" data-aos-delay="100">
+                            <div className="d-flex align-items-center">
+                              <img
+                                style={{ width: '40px', height: '40px', borderRadius: '10px', marginRight: '10px' }}
+                                src={chaosGate.ContentsIcon}
+                                alt="Chaos Gate Icon"
+                              />
+                              <span
+                                className="text-label"
+                                style={{
+                                  color: '#c81919',
+                                  fontSize: '20px',
+                                  fontWeight: '900',
+                                }}
+                              >
+                                {chaosGateTimeRemaining || '데이터를 불러오는 중...'}
+                              </span>
+                            </div>
+                          </div>
+                        )))
+                      }
+
+                      {fildBosses.list.length === 0 ? (
+                        <div className="d-flex align-items-center">
+                          <img
+                            style={{ width: '40px', height: '40px', borderRadius: '10px', marginRight: '10px' }}
+                            src='/assets/img/noFB.png' 
+                            alt="No Field Boss Icon"
+                          />
+                          <span
+                            className="text-label"
+                            style={{
+                              color: '#c81919',
+                              fontSize: '20px',
+                              fontWeight: '900',
+                            }}
+                          >
+                            오늘은 등장하지 않아요!
+                          </span>
+                        </div>
+                      ) : (
+                        fildBosses.list.slice(0, 3).map((fildBoss, index) => (
+                          <div key={index} className="d-flex" data-aos-delay="100">
+                            <div className="d-flex align-items-center">
+                              <img
+                                style={{ width: '40px', height: '40px', borderRadius: '10px', marginRight: '10px' }}
+                                src={fildBoss.ContentsIcon}
+                                alt="Field Boss Icon"
+                              />
+                              <span
+                                className="text-label"
+                                style={{
+                                  color: '#c81919',
+                                  fontSize: '20px',
+                                  fontWeight: '900',
+                                }}
+                              >
+                                {fieldBossTimeRemaining || '데이터를 불러오는 중...'}
+                              </span>
+                            </div>
+                          </div>
+                        )))
+                      }
                 </div>
             </div>
+
+
+
+
             </div>
     </div>
 
