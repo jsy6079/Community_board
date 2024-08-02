@@ -300,7 +300,7 @@ function Main() {
                                   fontWeight: '900',
                                 }}
                               >
-                                {chaosGateTimeRemaining || '데이터를 불러오는 중...'}
+                                {chaosGateTimeRemaining || message}
                               </span>
                             </div>
                           </div>

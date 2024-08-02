@@ -8,7 +8,7 @@ import NoticeBoardDetail from './noticeBoard/noticeBoardDetail';
 import NoticeBoard from './noticeBoard/noticeBoard';
 import Login from './login/login';
 import Signup from './signup/signup';
-import SearchCharacter from './mainSection/searchCharacter'
+import SearchCharacter from './mainSection/searchCharacter';
 
 function App() {
   return (

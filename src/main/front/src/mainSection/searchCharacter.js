@@ -68,13 +68,15 @@ function SearchCharacter() {
     }, [searchCharacter]);
 
   // 검색 핸들러
-    const handleChange2 = (event) => {
-      event.preventDefault();
-      setSearchCharacter(event.target.value);
-    };
+    // const handleChange2 = (event) => {
+    //   event.preventDefault();
+    //   setSearchCharacter(event.target.value);
+    // };
 
     const handleSearch2 = (event) => {
       event.preventDefault();
+      setSearchCharacter(event.target.value);
+      console.log('11111111111111111111111111');
       navigate('/searchCharacter/' + searchCharacter, { state: { searchCharacter } });
     };
 
@@ -134,7 +136,7 @@ function SearchCharacter() {
       <div className="container section-title" data-aos="fade-up">
 
       <form className='input-character-container'>
-            <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' onChange={handleChange2} placeholder='캐릭터명을 입력해주세요' required></input>
+            <input type='text' className='input-character' id='searchCharacter' name='searchCharacter' placeholder='캐릭터명을 입력해주세요' required></input>
             <button className='btn-two green small rounded' type='button' onClick={handleSearch2}>검색</button>
           </form>
 
