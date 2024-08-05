@@ -342,7 +342,7 @@ function Main() {
                                   fontWeight: '900',
                                 }}
                               >
-                                {fieldBossTimeRemaining || '데이터를 불러오는 중...'}
+                                {fieldBossTimeRemaining || message}
                               </span>
                             </div>
                           </div>

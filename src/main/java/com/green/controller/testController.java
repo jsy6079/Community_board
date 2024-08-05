@@ -29,6 +29,7 @@ public class testController {
     private String apiKey;
     
 
+    // 이벤트
     @GetMapping("event")
     public ResponseEntity<String> getLostArkEvents() {
         
@@ -53,6 +54,7 @@ public class testController {
     }
     
 
+    // 공지
     @GetMapping("notice")
     public ResponseEntity<String> getLostArkNotice() {
         
@@ -280,54 +282,7 @@ public class testController {
 
     }
       
-//        @GetMapping("characters/{searchCharacter}")
-//        public ResponseEntity<String> getLostArkCharacters(@PathVariable String searchCharacter) {
-//            RestTemplate restTemplate = new RestTemplate();
-//            String url = "https://developer-lostark.game.onstove.com/armories/characters/" + searchCharacter;
-//            
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.set("accept", "application/json");
-//            headers.set("authorization", "bearer " + apiKey);
-//            
-//            HttpEntity<String> entity = new HttpEntity<>(headers);
-//            
-//            // 각 엔드포인트를 호출합니다.
-//            ResponseEntity<String> profilesResponse = restTemplate.exchange(url + "/profiles", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> equipmentResponse = restTemplate.exchange(url + "/equipment", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> avatarsResponse = restTemplate.exchange(url + "/avatars", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> combatSkillsResponse = restTemplate.exchange(url + "/combat-skills", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> engravingsResponse = restTemplate.exchange(url + "/engravings", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> cardsResponse = restTemplate.exchange(url + "/cards", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> gemsResponse = restTemplate.exchange(url + "/gems", HttpMethod.GET, entity, String.class);
-//            ResponseEntity<String> collectiblesResponse = restTemplate.exchange(url + "/collectibles", HttpMethod.GET, entity, String.class);
-//            
-//            // 결과를 Map으로 집계합니다.
-//            Map<String, Object> responseMap = new HashMap<>();
-//            responseMap.put("profiles", profilesResponse.getBody());
-//            responseMap.put("equipment", equipmentResponse.getBody());
-//            responseMap.put("avatars", avatarsResponse.getBody());
-//            responseMap.put("combatSkills", combatSkillsResponse.getBody());
-//            responseMap.put("engravings", engravingsResponse.getBody());
-//            responseMap.put("cards", cardsResponse.getBody());
-//            responseMap.put("gems", gemsResponse.getBody());
-//            responseMap.put("collectibles", collectiblesResponse.getBody());
-//            
-//            // ObjectMapper를 사용하여 Map을 JSON 문자열로 변환합니다.
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            String responseJson;
-//            try {
-//                responseJson = objectMapper.writeValueAsString(responseMap);
-//            } catch (Exception e) {
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error generating JSON response");
-//            }
-//            
-//            return ResponseEntity.ok(responseJson);
-//        }
-//    
-
-    
-    
-    
+    // 캘린더
     @GetMapping("calender")
     public ResponseEntity<String> getLostArkCalender() {
         

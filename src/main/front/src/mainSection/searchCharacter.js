@@ -76,7 +76,6 @@ function SearchCharacter() {
     const handleSearch2 = (event) => {
       event.preventDefault();
       setSearchCharacter(event.target.value);
-      console.log('11111111111111111111111111');
       navigate('/searchCharacter/' + searchCharacter, { state: { searchCharacter } });
     };
 
