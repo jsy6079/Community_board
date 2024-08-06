@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="noticeBoard")
+@Table(name="lo_noticeBoard")
 @Setter
 @Getter
 public class NoticeBoard {
@@ -32,8 +32,7 @@ public class NoticeBoard {
 	@Column(name="noticeBoardTitle",nullable = false, length = 90)
 	private String noticeBoardTitle;
 	
-	@Lob
-	@Column(name="noticeBoardContent", nullable = false)
+	@Column(length=1000, name="noticeBoardContent", nullable = false)
 	private String noticeBoardContent;
 	
 	@Column(name="noticeBoardWriter", nullable = false)
